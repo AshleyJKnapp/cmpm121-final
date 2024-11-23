@@ -1,0 +1,15 @@
+{
+  "name": "cmpm121-final",
+  "version": "1.0.0",
+  "description": "### Tools Lead: Nathaniel-Berl Valdenor  This person will research alternative tools, identify good ones, and help every other team member set them up on their own machine in the best configuration for your project. This person might also establish your team’s coding style guidelines and help peers setup auto-formatting systems. This person should provide support for systems like source control and automated deployment (if appropriate to your team’s approach).",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "phaser": "^3.87.0"
+  }
+}
