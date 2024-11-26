@@ -17,21 +17,42 @@ export default class GameScene extends Phaser.Scene {
 
     create() {
         // Use Tilemap class to create map
-        const { map, groundLayer, wallsLayer } = this.tilemap.create();
+        const { groundLayer, wallsLayer, tiles } = this.tilemap.create();
 
-        this.player = new Player(this, 100, 100, 'player');
-        this.player.setScale(0.5);
+        this.groundLayer = groundLayer;
+        this.wallsLayer = wallsLayer;
+
+        tiles.forEach(tile => {
+            tile.setState(0);
+        });
+
+        const scale = 3;
+
+        this.player = new Player(this, 72, 72, 'player');
+        this.player.setScale(scale);
 
         // Add wall collision for player
         this.physics.add.collider(this.player, this.wallsLayer);
 
-        // Movement keys
-        this.cursors = this.input.keyboard.createCursorKeys();
+        this.input.keyboard.on('keydown-A', event =>
+        {
+            this.player.x -= 16 * scale;
+        });
+        
+        this.input.keyboard.on('keydown-D', event =>
+        {
+            this.player.x += 16 * scale;
+        });
 
-        this.physics.world.createDebugGraphic();
-    }
+        this.input.keyboard.on('keydown-W', event =>
+        {
+            this.player.y -= 16 * scale;
+        });
 
-    update() {
-        this.player.update(this.cursors);
+        this.input.keyboard.on('keydown-S', event =>
+        {
+            this.player.y += 16 * scale;
+        });
+        
     }
 }

@@ -1,7 +1,11 @@
+import Tile from './Tile.js';
+
 export default class Tilemap {
     constructor(scene) {
         // Load map
         this.scene = scene;
+
+        this.tiles = [];
     }
 
     preload() {
@@ -23,14 +27,28 @@ export default class Tilemap {
         groundLayer.setScale(3);
         wallsLayer.setScale(3);
 
-        // Collision for Walls Layer
-        wallsLayer.setCollisionByProperty({ collides: true });
+        this.addCustomTiles(map, groundLayer);
 
         // Return the layers to use in GameScene
-        return { map, groundLayer: this.groundLayer, wallsLayer: this.wallsLayer };
+        return { map, groundLayer, wallsLayer, tiles: this.tiles };
     }
 
-    getWallsLayer() {
-        return this.wallsLayer;
+    addCustomTiles(map, groundLayer) {
+        const tileWidth = map.tileWidth * groundLayer.scaleX;
+        const tileHeight = map.tileHeight * groundLayer.scaleY;
+
+        map.forEachTile(tile => {
+            if (tile.layer.name === 'Ground') {
+                const x = tile.x * tileWidth;
+                const y = tile.y * tileHeight;
+
+                const customTile = new Tile(this.scene, x, y, 'tile', 0);
+                this.tiles.push(customTile);
+            }
+        });
+    }
+
+    getTiles() {
+        return this.tiles;
     }
 }
