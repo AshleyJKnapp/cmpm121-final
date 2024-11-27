@@ -1,10 +1,10 @@
 export default class Tile extends Phaser.GameObjects.Image {
-    constructor(scene, x, y, texture, state = 0) {
+    constructor(scene, x, y, texture, layer) {
         super(scene, x, y, texture);
 
         this.scene = scene;
-        this.state = state;
         this.plant = null;
+        this.layer = layer;
 
         // Resources
         this.water = 0;
@@ -14,11 +14,11 @@ export default class Tile extends Phaser.GameObjects.Image {
         this.setOrigin(0);
     }
 
+    getCellCoordinates() {
+        const tileX = this.layer.worldToTileX(this.x);
+        const tileY = this.layer.worldToTileY(this.y);
 
-    setState(newState) {
-        this.state = newSstate;
-        const textures = ['tile', 'obstacle', 'special'];
-        this.setTexture(textures[newState]);
+        return { x: tileX, y: tileY };
     }
 
     addPlant(plant) {
@@ -33,8 +33,8 @@ export default class Tile extends Phaser.GameObjects.Image {
         }
     }
 
-    addWater(amount) {
-        this.water += amount;
+    addWater() {
+        this.water += Math.floor(Math.random() * (4));
     }
 
     removeWater(amount) {
@@ -42,6 +42,11 @@ export default class Tile extends Phaser.GameObjects.Image {
     }
 
     setSun() {
-        this.sun = Math.floor(Math.random() * (6));
+        this.sun = Math.floor(Math.random() * (8));
+    }
+
+    updateTile() {
+        this.addWater();
+        this.setSun();
     }
 }
