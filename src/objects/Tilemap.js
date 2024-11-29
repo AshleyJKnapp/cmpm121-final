@@ -24,8 +24,8 @@ export default class Tilemap {
         const groundLayer = map.createLayer('Ground', tileset, 0, 0);
         const wallsLayer = map.createLayer('Walls', tileset, 0, 0);
 
-        groundLayer.setScale(3);
-        wallsLayer.setScale(3);
+        groundLayer.setScale(1);
+        wallsLayer.setScale(1);
 
         this.addCustomTiles(map, groundLayer);
 
@@ -42,7 +42,7 @@ export default class Tilemap {
                 const x = tile.x * tileWidth;
                 const y = tile.y * tileHeight;
 
-                const customTile = new Tile(this.scene, x, y, 'tile', 0);
+                const customTile = new Tile(this.scene, x, y, tile.layer);
                 this.tiles.push(customTile);
             }
         });

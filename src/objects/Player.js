@@ -1,5 +1,3 @@
-import Tilemap from './Tilemap.js';
-
 export default class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, texture) {
         // Call the parent class constructor

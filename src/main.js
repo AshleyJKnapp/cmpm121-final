@@ -2,8 +2,13 @@ import GameScene from "./scenes/GameScene.js";
 
 const config = {
     type: Phaser.AUTO,
-    width: 1920,
-    height: 1920,
+    width: 1024,
+    height: 576,
+    scale: {
+      mode: Phaser.Scale.FIT,
+      autoCenter: Phaser.Scale.CENTER_BOTH
+    },
+    pixelArt: true,
     physics: {
       default: 'arcade',
       arcade: {
