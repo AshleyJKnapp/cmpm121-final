@@ -15,7 +15,7 @@ export default class GameScene extends Phaser.Scene {
         this.load.image('player', 'src/assets/player.png');
 
         //Set up an Array of plants currently on the board
-        const plantsArr = [];
+        this.plantsArr = [];
     }
 
     create() {
@@ -129,14 +129,14 @@ export default class GameScene extends Phaser.Scene {
         }
         else{
             this.nightOverlay.setVisible(false);
-            plantUpdate();
+            this.plantUpdate();
         }
     }
 
     //PlaceHolder Function
     //Updates all plants on the map in the array as the day progresses
     plantUpdate(){
-        for(let i = 0; i < plantsArr.length; i++){
+        for(let i = 0; i < this.plantsArr.length; i++){
             //Update every plants in array
         }
     }
