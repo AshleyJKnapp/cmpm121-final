@@ -4,8 +4,9 @@ export class Chair extends Plant {
   constructor(scene, x, y) {
     super(scene, x, y);
 
-    // this.spriteArray = ["egg.png", "midChair.png", "fullChair.png"];
-    this.spriteArray = ['testPlant'];
+    this.type = "chair";
+    // The pngs have not been actually preloaded yet
+    this.spriteArray = ["egg.png", "midChair.png", "fullChair.png"];
     this.maxGrowthStage = this.spriteArray.length - 1;
 
     // Sun + Water Growth Requirements Override

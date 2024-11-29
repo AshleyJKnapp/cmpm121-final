@@ -12,7 +12,6 @@ export class Plant extends Phaser.GameObjects.Sprite{
   // Display first growth on initialization
   init(){
     if (this.spriteArray) {
-      // this.sprite.setTexture(this.spriteArray[this.growthStage]);
       this.scene.add.sprite(this.x, this.y, this.spriteArray[this.growthStage]);
       console.log("poop xy is "+this.x+" "+this.y);
     } else {
@@ -21,9 +20,10 @@ export class Plant extends Phaser.GameObjects.Sprite{
   }
 
   // Checks if the plant should grow and grows
-  plantCheck(sun, water){
+  // toCheck should not be used if there are no growing requirements
+  plantCheck(sun, water, toCheck){
     // Base plant growth requirement check
-    if (sun >= this.requiredSun && water >= this.requiredWater) {
+    if (sun >= this.requiredSun && water >= this.requiredWater && this.checkRequirements(toCheck)) {
       this.grow();
     }
   }
@@ -44,26 +44,13 @@ export class Plant extends Phaser.GameObjects.Sprite{
     }
   }
 
-  // Returns an array of the types of plants in adjacent cells
-  getAdj(){
-    let foundAdj = [];
+  // Returns true as default if there are no requirements to grow
+  checkRequirements(_toCheck){
+    return true;
+  }
 
-    // TileType 0 = nothing
-    // TileType above 0 is a plant
-    for (let i = -1; i <= 1; i++) {
-      for (let j = -1; j <= 1; j++) {
-        if (i === 0 && j === 0) continue; // Skip this tile
-
-        if (getTileType(dx, dy) > 0){
-          foundAdj.push(checkedTile);
-        }
-      }
-    }
-
-    if (foundChairs >= 2){
-      return true;
-    }
-
-    return foundAdj;
+  // Returns the plant type, set in each class
+  getType(){
+    return this.type;
   }
 }
