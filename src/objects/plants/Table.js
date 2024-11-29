@@ -1,7 +1,9 @@
-export class Chair extends Plant {
+export class Table extends Plant {
   constructor(scene, x, y) {
     super(scene, x, y);
 
+    this.type = "table";
+    // The pngs have not been actually preloaded yet
     this.spriteArray = ["egg.png", "midTable.png", "fullTable.png"];
     this.maxGrowthStage = this.spriteArray.length - 1;
     this.plantType = "table";
@@ -13,31 +15,29 @@ export class Chair extends Plant {
     this.init();
   }
 
-  // plantCheck override that checks for adjacent requirements
-  plantCheck(sun, water) {
-    if (sun >= this.requiredSun && water >= this.requiredWater && this.checkAdj()) {
+  // plantCheck override that checks for adjacency requirements
+  // toCheck is an array of adjacent tiles type values (Array of strings)
+  plantCheck(sun, water, toCheck) {
+    if (sun >= this.requiredSun && water >= this.requiredWater && this.checkRequirements(toCheck)) {
       this.grow();
     }
   }
 
-  // Check if adjacent have at least 2 chairs
-  checkAdj(){
-    let adjVals = this.getAdj();
+  // Check if strings array contain at least 2 chairs
+  checkRequirements(toCheck){
     let foundChairs = 0;
 
-    for (let val in adjVals){
-      // TileType 1 = Chair
-      // *NOTE: this number may change depending on however the tiles are set up, im not working on tiles so idk*
-      if (val == 1){
+    for (let val in toCheck){
+      if (val == "chair"){
         foundChairs++;
+        // return true if enough adjacent chairs found
+        if (foundChairs >= 2){
+          return true;
+        }
       }
     }
 
-    // return true if neighbors found, false otherwise
-    if (foundChairs >= 2){
-      return true;
-    }
-
+    // Return false if not enough adjacent chairs have been found
     return false;
   }
 }
