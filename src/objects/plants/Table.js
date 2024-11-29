@@ -6,7 +6,6 @@ export class Table extends Plant {
     // The pngs have not been actually preloaded yet
     this.spriteArray = ["egg.png", "midTable.png", "fullTable.png"];
     this.maxGrowthStage = this.spriteArray.length - 1;
-    this.plantType = "table";
 
     // Sun + Water Growth Requirements Override
     this.requiredSun = 1;

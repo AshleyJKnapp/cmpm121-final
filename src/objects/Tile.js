@@ -28,8 +28,20 @@ export default class Tile extends Phaser.GameObjects.Image {
 
     removePlant() {
         if (this.plant) {
+            if(this.plant.type == "chair"){
+                scene.chairHarvested += 1;
+            }
+            else if(this.plant.type == "table"){
+                scene.tableHarvested += 1;
+            }
+            else if(this.plant.type == "wall"){
+                scene.wallHarvested += 1;
+            }
             this.plant.destroy();
             this.plant = null;
+        }
+        else{
+            console.log("There are no plants to harvest here");
         }
     }
 

@@ -13,6 +13,9 @@ export default class GameScene extends Phaser.Scene {
 
         // Preload other assets later
         this.load.image('player', 'src/assets/player.png');
+
+        //Set up an Array of plants currently on the board
+        const plantsArr = [];
     }
 
     create() {
@@ -23,6 +26,11 @@ export default class GameScene extends Phaser.Scene {
         this.wallsLayer = wallsLayer;
         this.chairsHarvested = 0;
         this.tablesHarvested = 0;
+        this.wallHarvested = 0;
+        this.tutorialComplete = false;
+        this.gameTime = 0;
+        this.nightOverlay = this.add.rectangle(0, 0, 1024, 576, 0x4c354b, 50).setOrigin(0,0);
+        this.nightOverlay.setVisible(false);
 
         const scale = 1;
 
@@ -48,6 +56,14 @@ export default class GameScene extends Phaser.Scene {
         this.input.keyboard.on('keydown-S', event =>
         {
             this.player.y += 16 * scale;
+        });
+
+        //Manuel Time Movement
+        this.input.keyboard.on('keyup-RIGHT', event =>{
+            this.gameTime += 12;
+            if(this.gameTime / 12 == 2){
+                this.gameTime = 0;        
+            }
         });
 
         this.cameras.main.setZoom(2)
@@ -85,6 +101,7 @@ export default class GameScene extends Phaser.Scene {
         // }
 
         this.cameraCheck();
+        this.clockUpdate();
         this.plantInvCheck();
     }
 
@@ -106,11 +123,32 @@ export default class GameScene extends Phaser.Scene {
         //console.log(this.cameras.main.x, this.player.y);
     }
 
+    clockUpdate(){
+        if(this.gameTime / 12 == 1){
+            this.nightOverlay.setVisible(true);
+        }
+        else{
+            this.nightOverlay.setVisible(false);
+            plantUpdate();
+        }
+    }
+
+    //PlaceHolder Function
+    //Updates all plants on the map in the array as the day progresses
+    plantUpdate(){
+        for(let i = 0; i < plantsArr.length; i++){
+            //Update every plants in array
+        }
+    }
+
     //Checks if Player has harvested 1 of each plant
     plantInvCheck(){
-        if(this.chairsHarvested >= 1 && this.tablesHarvested >= 1){
-            this.add.text(game.config.width/2, game.config.height/3 - borderUISize - 
-                borderPadding, 'Tutorial Complete!', tutorialConfig).setOrigin(0.5);
+        if(this.chairsHarvested >= 1 && this.tablesHarvested >= 1 && this.wallHarvested >= 1 && this.tutorialComplete == false){
+            //This code doesn't work because var game is unable to be read
+            //this.add.text(game.config.width/2, game.config.height/3 - borderUISize - 
+              //  borderPadding, 'Tutorial Complete!', tutorialConfig).setOrigin(0.5);
+            console.log("Tutorial Complete!");
+            this.tutorialComplete = true;
         }
     }
 }
