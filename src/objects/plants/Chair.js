@@ -7,6 +7,7 @@ export class Chair extends Plant {
     // this.spriteArray = ["egg.png", "midChair.png", "fullChair.png"];
     this.spriteArray = ['testPlant'];
     this.maxGrowthStage = this.spriteArray.length - 1;
+    this.plantType = "chair";
 
     // Sun + Water Growth Requirements Override
     this.requiredSun = 1;

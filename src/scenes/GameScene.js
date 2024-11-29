@@ -21,6 +21,8 @@ export default class GameScene extends Phaser.Scene {
 
         this.groundLayer = groundLayer;
         this.wallsLayer = wallsLayer;
+        this.chairsHarvested = 0;
+        this.tablesHarvested = 0;
 
         const scale = 1;
 
@@ -83,6 +85,7 @@ export default class GameScene extends Phaser.Scene {
         // }
 
         this.cameraCheck();
+        this.plantInvCheck();
     }
 
         // CAMERA FUNCTION
@@ -100,6 +103,14 @@ export default class GameScene extends Phaser.Scene {
             this.cameras.main.pan(1024 * 3/4, 576/4, 600, 'Power2');
         }
             
-        console.log(this.cameras.main.x, this.player.y);
+        //console.log(this.cameras.main.x, this.player.y);
+    }
+
+    //Checks if Player has harvested 1 of each plant
+    plantInvCheck(){
+        if(this.chairsHarvested >= 1 && this.tablesHarvested >= 1){
+            this.add.text(game.config.width/2, game.config.height/3 - borderUISize - 
+                borderPadding, 'Tutorial Complete!', tutorialConfig).setOrigin(0.5);
+        }
     }
 }
