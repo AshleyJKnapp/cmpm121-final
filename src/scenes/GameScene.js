@@ -156,4 +156,13 @@ export default class GameScene extends Phaser.Scene {
             this.tutorialComplete = true;
         }
     }
+
+    //Save Game State
+    saveGameState(){
+        const gameState = {
+            playerLocation,
+            plantsArr,
+            plantInv,
+        };
+    }
 }
