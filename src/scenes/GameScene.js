@@ -1,5 +1,8 @@
 import Player from "../objects/Player.js";
 import Tilemap from "../objects/Tilemap.js";
+import { Chair } from "../objects/plants/Chair.js";
+import { Table } from "../objects/plants/Table.js";
+import { Wall } from "../objects/plants/Wall.js";
 
 export default class GameScene extends Phaser.Scene {
     constructor() {
@@ -26,9 +29,11 @@ export default class GameScene extends Phaser.Scene {
     create() {
         // Use Tilemap class to create map
         const { groundLayer, wallsLayer, tiles } = this.tilemap.create();
+        const tileSize = 16;
 
         this.groundLayer = groundLayer;
         this.wallsLayer = wallsLayer;
+        this.currentItem = "";
         this.chairsHarvested = 0;
         this.tablesHarvested = 0;
         this.wallHarvested = 0;
@@ -42,34 +47,75 @@ export default class GameScene extends Phaser.Scene {
         this.player = new Player(this, 104, 104, 'player');
         this.player.setScale(scale);
 
-        // Player Movement Controls (WASD)
+        // -- Player Movement Controls (WASD) --
+        // Left
         this.input.keyboard.on('keydown-A', event =>
         {
-            this.player.x -= 16 * scale;
+            this.player.x -= tileSize * scale;
+            this.gameTimeUpdate();
         });
         
+        // Right
         this.input.keyboard.on('keydown-D', event =>
         {
-            this.player.x += 16 * scale;
+            this.player.x += tileSize * scale;
+            this.gameTimeUpdate();
         });
 
+        // Up
         this.input.keyboard.on('keydown-W', event =>
         {
-            this.player.y -= 16 * scale;
+            this.player.y -= tileSize * scale;
+            this.gameTimeUpdate();
         });
 
+        // Down
         this.input.keyboard.on('keydown-S', event =>
         {
-            this.player.y += 16 * scale;
+            this.player.y += tileSize * scale;
+            this.gameTimeUpdate();
         });
 
-        //Manuel Time Movement
-        this.input.keyboard.on('keyup-RIGHT', event =>{
-            this.gameTime += 12;
-            if(this.gameTime / 12 == 2){
-                this.gameTime = 0;        
+
+        //  -- Player Select Item In Inventory --
+        // TODO: somehow indicate to the player what they are holding
+        // Chair
+        this.input.keyboard.on('keydown-ONE', event =>
+        {
+            console.log("Holding chair");
+            this.currentItem = "chair";
+        });
+        // Table
+        this.input.keyboard.on('keydown-TWO', event =>
+        {
+            console.log("Holding table");
+            this.currentItem = "table";
+        });
+        // Wall
+        this.input.keyboard.on('keydown-THREE', event =>
+        {
+            console.log("Holding wall");
+            this.currentItem = "wall";
+        });
+
+        // -- Player Actions --
+        this.input.keyboard.on('keydown-ENTER', event =>
+        {
+            console.log("Player Action");
+            if(this.currentItem == "chair"){
+                let plant = new Chair(this, this.player.x, this.player.y + tileSize);
+                this.plantsArr.push(plant);
+            }
+            else if(this.currentItem == "table"){
+                let plant = new Table(this, this.player.x, this.player.y + tileSize);
+                this.plantsArr.push(plant);
+            }
+            else if(this.currentItem == "wall"){
+                let plant = new Wall(this, this.player.x, this.player.y + tileSize);
+                this.plantsArr.push(plant);
             }
         });
+
 
         this.cameras.main.setZoom(2)
         this.cameras.main.setBounds(0, 0, 1024, 576)
@@ -128,8 +174,15 @@ export default class GameScene extends Phaser.Scene {
         //console.log(this.cameras.main.x, this.player.y);
     }
 
+    gameTimeUpdate(){
+        this.gameTime += 1;
+        if(this.gameTime / 12 == 2){
+            this.gameTime = 0;        
+        }
+    }
+
     clockUpdate(){
-        if(this.gameTime / 12 == 1){
+        if(this.gameTime / 12 > 1){
             this.nightOverlay.setVisible(true);
         }
         else{
@@ -142,8 +195,32 @@ export default class GameScene extends Phaser.Scene {
     //Updates all plants on the map in the array as the day progresses
     plantUpdate(){
         for(let i = 0; i < this.plantsArr.length; i++){
-            //Update every plants in array
+            let currPlant = this.plantsArr[i];
+            // TODO(?) use tile to get the water and sun from the tile the plant is on
+            // not sure how to use tiles yet though
+            let sun = 5; // Placeholder value
+            let water = 5; // Placeholder value
+
+            if (currPlant.type == "chair"){
+                currPlant.plantCheck(sun, water);
+            } else
+            // Later, get all the adjacent plants and give the array to plantCheck
+            if (currPlant.type == "table"){
+                // tableAdjCollect(currPlant.x, currPlant.y);
+                currPlant.plantCheck(sun, water, []);
+            } else
+            // Later, get the plants on the same row/column and give the array to plantCheck
+            if (currPlant.type == "wall"){
+                currPlant.plantCheck(sun, water, []);
+            }
         }
+    }
+
+    tableAdjCollect(x, y){
+        let arr = [];
+        // check all tiles around x, y for the type of chair
+        // (idk how to access tiles, do we make an array for tiles like we do with plants?)
+        return arr;
     }
 
     //Checks if Player has harvested 1 of each plant

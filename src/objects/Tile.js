@@ -1,3 +1,5 @@
+// import { Chair } from "./plants/Chair.js";
+
 export default class Tile extends Phaser.GameObjects.Image {
     constructor(scene, x, y, texture, layer) {
         super(scene, x, y, texture);
@@ -21,9 +23,9 @@ export default class Tile extends Phaser.GameObjects.Image {
         return { x: tileX, y: tileY };
     }
 
-    addPlant(plant) {
-        this.plant = plant;
-        plant.setPosition(this.x, this.y);
+    addPlant(plantType) {
+        this.plant = plantType;
+        // plant.setPosition(this.x, this.y);
     }
 
     removePlant() {
@@ -47,14 +49,17 @@ export default class Tile extends Phaser.GameObjects.Image {
 
     addWater() {
         this.water += Math.floor(Math.random() * (4));
+        return this.water;
     }
 
     removeWater(amount) {
         this.water = Math.max(0, this.water - amount);
+        return this.water;
     }
 
     setSun() {
         this.sun = Math.floor(Math.random() * (8));
+        return this.sun;
     }
 
     updateTile() {
