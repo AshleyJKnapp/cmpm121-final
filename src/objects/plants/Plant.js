@@ -7,13 +7,14 @@ export class Plant extends Phaser.GameObjects.Sprite{
     this.x = x;
     this.y = y;
     this.growthStage = 0; // default growthStage
+    this.spriteObj;
   }
 
   // Display first growth on initialization
   init(){
     if (this.spriteArray) {
-      this.scene.add.sprite(this.x, this.y, this.spriteArray[this.growthStage]);
-      console.log("poop xy is "+this.x+" "+this.y);
+      console.log("placing thingy at "+this.x+" "+this.y);
+      this.spriteObj = this.scene.add.sprite(this.x, this.y, this.spriteArray[this.growthStage]);
     } else {
       console.warn("initializeSprite(): no sprite or spriteArray defined.");
     }
@@ -37,8 +38,8 @@ export class Plant extends Phaser.GameObjects.Sprite{
   }
 
   updateSprite() {
-    if (this.sprite && this.spriteArray) {
-        this.sprite.setTexture(this.spriteArray[this.growthStage]);
+    if (this.spriteArray) {
+      this.spriteObj.setTexture(this.spriteArray[this.growthStage]);
     } else {
         console.warn("updateSprite(): no sprite or spriteArray defined.");
     }

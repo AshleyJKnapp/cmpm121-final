@@ -1,10 +1,11 @@
+import { Plant } from "./Plant.js";
+
 export class Wall extends Plant {
   constructor(scene, x, y) {
     super(scene, x, y);
 
     this.type = "wall";
-    // The pngs have not been actually preloaded yet
-    this.spriteArray = ["egg.png", "midWall.png", "fullWall.png"];
+    this.spriteArray = ["egg", "woodpile", "wall"];
     this.maxGrowthStage = this.spriteArray.length - 1;
 
     // Sun + Water Growth Requirements Override
@@ -19,6 +20,9 @@ export class Wall extends Plant {
   // plantCheck override that checks for adjacent requirements
   // toCheck is an array of adjacent tiles type values (Array of strings)
   plantCheck(sun, water, toCheck) {
+    if (!toCheck){
+      console.warn("Table.js: plantCheck(): no array to check provided.");
+    }
     if (sun >= this.requiredSun && water >= this.requiredWater && this.checkRequirements(toCheck)) {
       this.grow();
     }
