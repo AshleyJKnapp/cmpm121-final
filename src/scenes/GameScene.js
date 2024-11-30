@@ -39,6 +39,7 @@ export default class GameScene extends Phaser.Scene {
         this.wallHarvested = 0;
         this.tutorialComplete = false;
         this.gameTime = 0;
+        this.isDaytime = true;
         this.nightOverlay = this.add.rectangle(0, 0, 1024, 576, 0x4c354b, 50).setOrigin(0,0);
         this.nightOverlay.setVisible(false);
 
@@ -176,6 +177,9 @@ export default class GameScene extends Phaser.Scene {
 
     gameTimeUpdate(){
         this.gameTime += 1;
+        if (this.isDaytime){
+            this.plantUpdate();
+        }
         if(this.gameTime / 12 == 2){
             this.gameTime = 0;        
         }
@@ -184,10 +188,12 @@ export default class GameScene extends Phaser.Scene {
     clockUpdate(){
         if(this.gameTime / 12 > 1){
             this.nightOverlay.setVisible(true);
+            this.isDaytime = false;
         }
         else{
             this.nightOverlay.setVisible(false);
-            this.plantUpdate();
+            this.isDaytime = true;
+            // this.plantUpdate();
         }
     }
 
