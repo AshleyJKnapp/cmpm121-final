@@ -13,6 +13,11 @@ export default class GameScene extends Phaser.Scene {
 
         // Preload other assets later
         this.load.image('player', 'src/assets/player.png');
+        this.load.image('egg', 'src/assets/Roguelike RPG Pack/TilesForGame/egg.png');
+        this.load.image('woodpile', 'src/assets/Roguelike RPG Pack/TilesForGame/pileofwood.png');
+        this.load.image('chair', 'src/assets/Roguelike RPG Pack/TilesForGame/chair.png');
+        this.load.image('table', 'src/assets/Roguelike RPG Pack/TilesForGame/table.png');
+        this.load.image('wall', 'src/assets/Roguelike RPG Pack/TilesForGame/wall.png');
 
         //Set up an Array of plants currently on the board
         this.plantsArr = [];
