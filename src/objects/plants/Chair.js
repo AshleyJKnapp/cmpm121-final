@@ -1,17 +1,16 @@
 import { Plant } from "./Plant.js";
 
 export class Chair extends Plant {
-  constructor(scene, x, y) {
-    super(scene, x, y);
+  constructor() {
+    super();
 
     this.type = "chair";
     this.spriteArray = ["egg", "woodpile", "chair"];
     this.maxGrowthStage = this.spriteArray.length - 1;
     
     // Sun + Water Growth Requirements Override
-    this.requiredSun = 1;
-    this.requiredWater = 2;
+    this.requiredSun = 2;
+    this.requiredWater = 1;
     
-    this.init();
   }
 }

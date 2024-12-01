@@ -1,23 +1,12 @@
-// import Tiles from "./src/objects/scenes/Tiles.js";
+export class Plant {
+  constructor() {
 
-export class Plant extends Phaser.GameObjects.Sprite{
-  constructor(scene, x, y) {
-    super(scene, x, y);
-
-    this.x = x;
-    this.y = y;
     this.growthStage = 0; // default growthStage
+    this.growth = 0;
+    this.growthThreshold = 5;
+    this.growthScaleBy = 2;
+    this.fullyGrown = false;
     this.spriteObj;
-  }
-
-  // Display first growth on initialization
-  init(){
-    if (this.spriteArray) {
-      console.log("placing thingy at "+this.x+" "+this.y);
-      this.spriteObj = this.scene.add.sprite(this.x, this.y, this.spriteArray[this.growthStage]);
-    } else {
-      console.warn("initializeSprite(): no sprite or spriteArray defined.");
-    }
   }
 
   // Checks if the plant should grow and grows
@@ -32,16 +21,23 @@ export class Plant extends Phaser.GameObjects.Sprite{
   // Grows the plant by increasing its growth stage and updates sprite
   grow(){
     if (this.growthStage < this.maxGrowthStage) {
-      this.growthStage++;
-      this.updateSprite();
+      this.growth++;
+      if (this.growth >= this.growthThreshold){
+        this.growthStage++;
+        this.growth = 0;
+        this.growthThreshold += this.growthScaleBy;
+      }
+    } else {
+      this.fullyGrown = true;
     }
   }
 
   updateSprite() {
     if (this.spriteArray) {
-      this.spriteObj.setTexture(this.spriteArray[this.growthStage]);
+      return this.spriteArray[this.growthStage];
     } else {
-        console.warn("updateSprite(): no sprite or spriteArray defined.");
+      console.warn("updateSprite(): no sprite or spriteArray defined.");
+      return null;  
     }
   }
 

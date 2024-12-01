@@ -1,18 +1,17 @@
 import { Plant } from "./Plant.js";
 
 export class Table extends Plant {
-  constructor(scene, x, y) {
-    super(scene, x, y);
+  constructor() {
+    super();
 
     this.type = "table";
     this.spriteArray = ["egg", "woodpile", "table"];
     this.maxGrowthStage = this.spriteArray.length - 1;
 
     // Sun + Water Growth Requirements Override
-    this.requiredSun = 1;
+    this.requiredSun = 4;
     this.requiredWater = 2;
     
-    this.init();
   }
 
   // plantCheck override that checks for adjacency requirements
@@ -30,10 +29,13 @@ export class Table extends Plant {
   checkRequirements(toCheck){
     let foundChairs = 0;
 
-    for (let val in toCheck){
-      if (val == "chair"){
+    for (let i = 0; i < toCheck.length; i++){
+      let val = toCheck[i];
+
+      if (val.type == "chair"){
         foundChairs++;
-        // return true if enough adjacent chairs found
+
+        // Return true if enough adjacent chairs found
         if (foundChairs >= 2){
           return true;
         }
