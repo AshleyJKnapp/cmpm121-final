@@ -23,8 +23,13 @@ export default class Tile extends Phaser.GameObjects.Image {
         return { x: tileX, y: tileY };
     }
 
-    addPlant(plantType) {
-        this.plant = plantType;
+    // Holds a pointer to a plant obj, which contains the
+    // current growthstage and provides the correct textures
+    addPlant(plant) {
+        if (plant == null){
+             console.warn("addPlant(): trying to add an undefined plant.");
+        }
+        this.plant = plant;
         // plant.setPosition(this.x, this.y);
     }
 
@@ -48,6 +53,9 @@ export default class Tile extends Phaser.GameObjects.Image {
     }
 
     addWater() {
+        if (this.water > 25){
+            return this.water;
+        }
         this.water += Math.floor(Math.random() * (4));
         return this.water;
     }
