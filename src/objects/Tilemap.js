@@ -36,15 +36,14 @@ export default class Tilemap {
     addCustomTiles(map, groundLayer) {
         const tileWidth = map.tileWidth * groundLayer.scaleX;
         const tileHeight = map.tileHeight * groundLayer.scaleY;
+        
+        groundLayer.forEachTile(tile => {
+            const x = tile.x * tileWidth;
+            const y = tile.y * tileHeight;
 
-        map.forEachTile(tile => {
-            if (tile.layer.name === 'Ground') {
-                const x = tile.x * tileWidth;
-                const y = tile.y * tileHeight;
-
-                const customTile = new Tile(this.scene, x, y, tile.layer);
-                this.tiles.push(customTile);
-            }
+            // "__DEFAULT" is a built in transparent texture
+            const customTile = new Tile(this.scene, x, y, "__DEFAULT", tile.layer);
+            this.tiles.push(customTile);
         });
     }
 
