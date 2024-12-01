@@ -1,6 +1,7 @@
 import Player from "../objects/Player.js";
 import Tilemap from "../objects/Tilemap.js";
 import { Chair } from "../objects/plants/Chair.js";
+import { Plant } from "../objects/plants/Plant.js";
 import { Table } from "../objects/plants/Table.js";
 import { Wall } from "../objects/plants/Wall.js";
 
@@ -29,17 +30,22 @@ export default class GameScene extends Phaser.Scene {
 
     create() {
         // Use Tilemap class to create map
-        const { groundLayer, wallsLayer, tiles } = this.tilemap.create();
-        const tileSize = 16;
-
+        const { _map, groundLayer, wallsLayer, tiles } = this.tilemap.create();
+        // console.log(this.tilemap.getTiles());
+        
         this.groundLayer = groundLayer;
         this.wallsLayer = wallsLayer;
+        this.tilesLayer = tiles;
+        this.tileSize = 16;
         this.currentItem = "";
+        this.roomsComplete = 0;
+        // remove these harvested and related logic later, as we are not harvesting these
         this.chairsHarvested = 0;
         this.tablesHarvested = 0;
         this.wallHarvested = 0;
         this.tutorialComplete = false;
         this.gameTime = 0;
+        this.halfDay = 12;
         this.isDaytime = true;
         this.nightOverlay = this.add.rectangle(0, 0, 1024, 576, 0x4c354b, 50).setOrigin(0,0);
         this.nightOverlay.setVisible(false);
@@ -53,28 +59,28 @@ export default class GameScene extends Phaser.Scene {
         // Left
         this.input.keyboard.on('keydown-A', event =>
         {
-            this.player.x -= tileSize * scale;
+            this.player.x -= this.tileSize * scale;
             this.gameTimeUpdate();
         });
         
         // Right
         this.input.keyboard.on('keydown-D', event =>
         {
-            this.player.x += tileSize * scale;
+            this.player.x += this.tileSize * scale;
             this.gameTimeUpdate();
         });
 
         // Up
         this.input.keyboard.on('keydown-W', event =>
         {
-            this.player.y -= tileSize * scale;
+            this.player.y -= this.tileSize * scale;
             this.gameTimeUpdate();
         });
 
         // Down
         this.input.keyboard.on('keydown-S', event =>
         {
-            this.player.y += tileSize * scale;
+            this.player.y += this.tileSize * scale;
             this.gameTimeUpdate();
         });
 
@@ -103,18 +109,36 @@ export default class GameScene extends Phaser.Scene {
         // -- Player Actions --
         this.input.keyboard.on('keydown-ENTER', event =>
         {
-            console.log("Player Action");
+            
+            // Create a plant to put in Tile
+            let plant = null;
             if(this.currentItem == "chair"){
-                let plant = new Chair(this, this.player.x, this.player.y + tileSize);
-                this.plantsArr.push(plant);
+                plant = new Chair();
             }
             else if(this.currentItem == "table"){
-                let plant = new Table(this, this.player.x, this.player.y + tileSize);
-                this.plantsArr.push(plant);
+                plant = new Table();
             }
             else if(this.currentItem == "wall"){
-                let plant = new Wall(this, this.player.x, this.player.y + tileSize);
-                this.plantsArr.push(plant);
+                plant = new Wall();
+            }
+
+            // Get the tile that has the coords right in front of the player
+            let t;
+            for (let i = 0; i < this.tilesLayer.length; i++){
+                // -offset & +offset to fix offset from character placement
+                let offset = this.tileSize/2;
+                if (this.tilesLayer[i].x == this.player.x-offset && this.tilesLayer[i].y == this.player.y+offset){
+                    t = this.tilesLayer[i];
+                }
+            }
+
+            // If a tile was found, put the plant in it
+            if (t != null && plant != null){
+                // Store the plant in the tile
+                t.addPlant(plant);
+                t.setTexture(plant.updateSprite());
+                // Store the tile in an array
+                this.plantsArr.push(t);
             }
         });
 
@@ -125,34 +149,6 @@ export default class GameScene extends Phaser.Scene {
     }
 
     update(time, delta) {
-        // Check player's position for camera
-        // const camera = this.cameras.main;
-        // const player = this.player;
-
-        // const cameraWidth = camera.width;
-        // const cameraHeight = camera.height;
-
-        // const marginLeft = camera.scrollX + this.cameraEdgeMargin;
-        // const marginRight = camera.scrollX + cameraWidth - this.cameraEdgeMargin;
-        // const marginTop = camera.scrollY + this.cameraEdgeMargin;
-        // const marginBottom = camera.scrollY + cameraHeight - this.cameraEdgeMargin;
-
-        // if (player.x < marginLeft) {
-        //     camera.scrollX = Math.max(0, player.x - cameraWidth / 2);
-        // }
-
-        // if (player.x > marginRight) {
-        //     camera.scrollX = Math.max(1024 - cameraWidth, player.x - cameraWidth / 2);
-        // }
-
-        // if (player.y < marginTop) {
-        //     camera.scrollY = Math.max(0, player.y - cameraHeight / 2);
-        // }
-
-        // if (player.y > marginBottom) {
-        //     camera.scrollY = Math.max(576, player.y - cameraHeight / 2);
-        // }
-
         this.cameraCheck();
         this.clockUpdate();
         this.plantInvCheck();
@@ -173,7 +169,6 @@ export default class GameScene extends Phaser.Scene {
             this.cameras.main.pan(1024 * 3/4, 576/4, 600, 'Power2');
         }
             
-        //console.log(this.cameras.main.x, this.player.y);
     }
 
     gameTimeUpdate(){
@@ -181,58 +176,173 @@ export default class GameScene extends Phaser.Scene {
         if (this.isDaytime){
             this.plantUpdate();
         }
-        if(this.gameTime / 12 == 2){
+        if(this.gameTime / this.halfDay == 2){
             this.gameTime = 0;        
         }
     }
 
     clockUpdate(){
-        if(this.gameTime / 12 > 1){
+        if(this.gameTime / this.halfDay > 1){
             this.nightOverlay.setVisible(true);
             this.isDaytime = false;
         }
         else{
             this.nightOverlay.setVisible(false);
             this.isDaytime = true;
-            // this.plantUpdate();
         }
     }
 
-    //PlaceHolder Function
-    //Updates all plants on the map in the array as the day progresses
+    // Updates all tiles and plants on the map in the array as the day progresses
     plantUpdate(){
-        for(let i = 0; i < this.plantsArr.length; i++){
-            let currPlant = this.plantsArr[i];
-            // TODO(?) use tile to get the water and sun from the tile the plant is on
-            // not sure how to use tiles yet though
-            let sun = 5; // Placeholder value
-            let water = 5; // Placeholder value
+        let numChairs = 0;
+        let numTables = 0;
+        let numWalls = 0;
 
-            if (currPlant.type == "chair"){
-                currPlant.plantCheck(sun, water);
-            } else
-            // Later, get all the adjacent plants and give the array to plantCheck
-            if (currPlant.type == "table"){
-                // tableAdjCollect(currPlant.x, currPlant.y);
-                currPlant.plantCheck(sun, water, []);
-            } else
-            // Later, get the plants on the same row/column and give the array to plantCheck
-            if (currPlant.type == "wall"){
-                currPlant.plantCheck(sun, water, []);
+        for(let i = 0; i < this.tilesLayer.length; i++){
+            let currTile = this.tilesLayer[i];
+            let currPlant = currTile.plant;
+
+            // Generate randomized sun and water for every tile
+            let sun = currTile.setSun();
+            let water = currTile.addWater();
+
+            // Run plant growth logic if there is a plant on this tile
+            if (currPlant != null){
+                if (currPlant.type == "chair"){
+                    let grew = currPlant.plantCheck(sun, water);
+                    if (grew) { currTile.removeWater(currPlant.requiredWater); }
+                    currTile.setTexture(currPlant.updateSprite());
+                    if (currPlant.fullyGrown) { numChairs++; }
+                }
+    
+                else if (currPlant.type == "table"){
+                    let checkArr = this.tableReqCollect(currTile.x, currTile.y);
+                    let grew = currPlant.plantCheck(sun, water, checkArr);
+                    if (grew) { currTile.removeWater(currPlant.requiredWater); }
+                    currTile.setTexture(currPlant.updateSprite());
+                    if (currPlant.fullyGrown) { numTables++; }
+                }
+    
+    
+                // TODO: make the walls connect to each other
+                else if (currPlant.type == "wall"){
+                    let checkArr = this.wallReqCollect(currTile.x, currTile.y);
+                    let grew = currPlant.plantCheck(sun, water, checkArr);
+                    if (grew) { currTile.removeWater(currPlant.requiredWater); }
+                    currTile.setTexture(currPlant.updateSprite());
+                    if (currPlant.fullyGrown) { numWalls++; }
+                }
+
             }
         }
+
+        // TODO: make a function to check if all of these are near each other
+        if (numChairs >= 2 && numTables >= 1 && numWalls >= 4) {
+            this.roomsComplete++;
+        }
     }
 
-    tableAdjCollect(x, y){
+    // Collects all grown plants surrounding x, y
+    tableReqCollect(x, y){
         let arr = [];
-        // check all tiles around x, y for the type of chair
-        // (idk how to access tiles, do we make an array for tiles like we do with plants?)
+
+        // Check all tiles around x, y for the type of chair
+        for (let dx = -this.tileSize; dx <= this.tileSize; dx += this.tileSize) {
+            for (let dy = -this.tileSize; dy <= this.tileSize; dy += this.tileSize) {
+                // Skip this tile
+                if (dx === 0 && dy === 0) continue;
+
+                // Check all plants for one with requirements
+                for(let i = 0; i < this.plantsArr.length; i++){
+                    let checkedTile = this.plantsArr[i];
+                
+                    // if fully grown AND x, y == x, y of tile we are checking
+                    if (checkedTile.plant.fullyGrown && (x + dx == checkedTile.x && y + dy == checkedTile.y)){
+                        arr.push(checkedTile.plant);
+                    }
+
+                }
+            }
+        }
+
+        return arr;
+    }
+
+    // Collects all grown plants in the column and row of x, y
+    wallReqCollect(x, y){
+        let arr = [];
+
+        // Check all plants
+        // for (const tile of tiles) {
+        for(let i = 0; i < this.plantsArr.length; i++){
+            let checkedTile = this.plantsArr[i];
+            // Check if the tile is on the same row or column
+            if (checkedTile.x == x || checkedTile.y == y) {
+                arr.push(checkedTile.plant);
+            }
+        }
+
+        return arr;
+    }
+
+
+    // PLACEHOLDER CODE:
+    // right now it creates an array of the closest tiles that are
+    // above, below, left, and right of x, y
+    // we will want it to place wall tiles down in between x, y and walls near it
+    // unless there is something int he way
+    wallDrawBetween(x, y){
+        let arr = [];
+        let cUp;
+        let cDown;
+        let cLeft;
+        let cRight;
+
+        // Check all plants for the closest tile in rows and colums
+        for(let i = 0; i < this.plantsArr.length; i++){
+            let checkedTile = this.plantsArr[i];
+
+            // Check only fully grown plants
+            if (checkedTile.plant.fullyGrown) {
+                // Check if the tile is above
+                if (checkedTile.x === x && checkedTile.y < y) {
+                    if (!cUp || y - checkedTile.y < y - cUp.y) {
+                        cUp = checkedTile.plant;
+                    }
+                }
+                // Check if the tile is below
+                if (checkedTile.x === x && checkedTile.y > y) {
+                    if (!cDown || checkedTile.y - y < cDown.y - y) {
+                        cDown = checkedTile.plant;
+                    }
+                }
+                // Check if the tile is to the left
+                if (checkedTile.y === y && checkedTile.x < x) {
+                    if (!cLeft || x - checkedTile.x < x - cLeft.x) {
+                        cLeft = checkedTile.plant;
+                    }
+                }
+                // Check if the tile is to the right
+                if (checkedTile.y === y && checkedTile.x > x) {
+                    if (!cRight || checkedTile.x - x < cRight.x - x) {
+                        cRight = checkedTile.plant;
+                    }
+                }
+            }
+        }
+
+        if (cRight) { arr.push (cRight); }
+        if (cRight) { arr.push (cRight); }
+        if (cRight) { arr.push (cRight); }
+        if (cRight) { arr.push (cRight); }
+        
         return arr;
     }
 
     //Checks if Player has harvested 1 of each plant
     plantInvCheck(){
-        if(this.chairsHarvested >= 1 && this.tablesHarvested >= 1 && this.wallHarvested >= 1 && this.tutorialComplete == false){
+        // if(this.chairsHarvested >= 1 && this.tablesHarvested >= 1 && this.wallHarvested >= 1 && this.tutorialComplete == false){
+        if(this.roomsComplete >= 1) {
             //This code doesn't work because var game is unable to be read
             //this.add.text(game.config.width/2, game.config.height/3 - borderUISize - 
               //  borderPadding, 'Tutorial Complete!', tutorialConfig).setOrigin(0.5);
