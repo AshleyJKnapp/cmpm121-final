@@ -28,3 +28,18 @@ Our alternate platform choice will be transitioning from Javascript to Typescrip
 ## Outlook
 
 We anticipate the transition between Javascript to Typescript being the hardest part of this project. This is because Phaser has been build on the Javascript language and even if we are merely moving to an adjacent language there are going to be many conflicts that we cannot overlook in order for our game to function. There will be a lot of refactoring and revision of the previously working code, perhaps even some deletions if it seems we cannot transition a mechanic in an appropiate amount of time due to the deadline.
+
+---
+
+# Devlog Entry - F0
+## How we satisfied the software requirements
+- F0.a: The player controls a character (WASD) that moves in specified increments that match the size of tiles in the game, to accentuate the grid based movement and grid/tile based planting system. On game initialization, transparent tiles are created all over the ground in the game, forming a grid. Plants are to be placed in these tiles, so they are forced to be in the grid.
+- F0.b: Every time the player moves, a turn passes in the game. A function is called to update all of the tiles in the game, essentially signifying a turn. When every tile updates, it checks if the attached plant (if the tile has a plant) grows, and sets the correct sun and water values for the tile.
+- F0.c: The player is able to plant on the tile in front of the character by pressing Enter. The player is not intended to harvest these plants as the game is designed to have the player grow them in the right spots.
+- F0.d: All tiles/Grid cells have sun and water levels. Every turn, a function will generate and replace the sun level, while the water function generates a number and adds that to the water level. The water level of a tile is decreased when a plant grows on it.
+- F0.e: There are three plants: Chair, Table, and Wall. The player can choose which of these plants they want to plant by selecting 1, 2, and 3 to plant a Chair, Table, or Wall respectively. Each of these "plants" have three growth stages: the egg stage, middle stage, and fully grown stage.
+- F0.f: Tables are only able to grow if there are at least two fully grown chairs directly adjacent to it. Its checking logic parses an array of all current plants and searches the matching x,y tiles that also have the right fully grown plant type (Chair). Walls are only able to grow if there is at least one Wall plant (any growth stage) in the same column or row as it. Its checking logic also parses an array of all current plants and searches for the matching x,y tiles that also have the right plant type (Wall).
+- F0.g: Currently, the tutorial is marked as complete when the player grows at least one table, two chairs, and 4 walls to the fully grown status.
+
+## Reflection
+Our group had considered using Godot GDScript while switching to C# later, but after some discussion we decided to go with our original choice of Phaser. Our whole group was already experienced with phaser so our Engine lead did not have to teach us how to use it. As for team role adjustments, while discussing the project as a team, we came to realize that Nathaniel seems to fit the role of designer better, as he proposed the creative direction we eventually went with. Ashley seemed to better fit the role of Engine lead as she would figure out how to connect our different class files together. She would also explain how the different parts of the code are supposed to work together.
