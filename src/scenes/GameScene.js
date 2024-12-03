@@ -1,9 +1,5 @@
 import Player from "../objects/Player.js";
-import Tilemap from "../objects/Tilemap.js";
-import { Chair } from "../objects/plants/Chair.js";
-import { Plant } from "../objects/plants/Plant.js";
-import { Table } from "../objects/plants/Table.js";
-import { Wall } from "../objects/plants/Wall.js";
+import ByteStructure, { Tilemap } from "../objects/ByteStructure.js";
 
 export default class GameScene extends Phaser.Scene {
     constructor() {

@@ -1,12 +1,10 @@
-// import { Chair } from "./plants/Chair.js";
-
 export default class Tile extends Phaser.GameObjects.Image {
-    constructor(scene, x, y, texture, layer) {
+    constructor(scene, x, y, texture, collides) {
         super(scene, x, y, texture);
 
         this.scene = scene;
         this.plant = null;
-        this.layer = layer;
+        this.collides = collides;
 
         // Resources
         this.water = 0;
@@ -14,13 +12,6 @@ export default class Tile extends Phaser.GameObjects.Image {
 
         scene.add.existing(this);
         this.setOrigin(0);
-    }
-
-    getCellCoordinates() {
-        const tileX = this.layer.worldToTileX(this.x);
-        const tileY = this.layer.worldToTileY(this.y);
-
-        return { x: tileX, y: tileY };
     }
 
     // Holds a pointer to a plant obj, which contains the
