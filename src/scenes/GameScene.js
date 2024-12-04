@@ -67,9 +67,9 @@ export default class GameScene extends Phaser.Scene {
             const tileY = Math.floor(this.player.y / this.tileSize);
             if(!this.wallCollision(tileX,tileY)){
                 this.player.x = newx;
+                this.saveGameState();
+                this.gameTimeUpdate();
             }
-            this.saveGameState();
-            this.gameTimeUpdate();
         });
         
         // Right
@@ -80,9 +80,9 @@ export default class GameScene extends Phaser.Scene {
             const tileY = Math.floor(this.player.y / this.tileSize);
             if(!this.wallCollision(tileX,tileY)){
                 this.player.x = newx;
+                this.saveGameState();
+                this.gameTimeUpdate();
             }
-            this.saveGameState();
-            this.gameTimeUpdate();
         });
 
         // Up
@@ -93,9 +93,9 @@ export default class GameScene extends Phaser.Scene {
             const tileY = Math.floor(newy / this.tileSize);
             if(!this.wallCollision(tileX,tileY)){
                 this.player.y = newy;
+                this.saveGameState();
+                this.gameTimeUpdate();
             }
-            this.saveGameState();
-            this.gameTimeUpdate();
         });
 
         // Down
@@ -106,9 +106,9 @@ export default class GameScene extends Phaser.Scene {
             const tileY = Math.floor(newy / this.tileSize);
             if(!this.wallCollision(tileX,tileY)){
                 this.player.y = newy;
+                this.saveGameState();
+                this.gameTimeUpdate();
             }
-            this.saveGameState();
-            this.gameTimeUpdate();
         });
         //---debug--localstate------------------
         /*
