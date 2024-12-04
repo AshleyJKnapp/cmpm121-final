@@ -60,8 +60,14 @@ export default class GameScene extends Phaser.Scene {
         // -- Player Movement Controls (WASD) --
         // Left
         this.input.keyboard.on('keydown-A', event =>
-        {
-            this.player.x -= this.tileSize * scale;
+        {   
+            const newx= this.player.x - this.tileSize * scale;
+            // Tiled hates floats, use floor
+            const tileX = Math.floor(newx / this.tileSize);
+            const tileY = Math.floor(this.player.y / this.tileSize);
+            if(!this.wallCollision(tileX,tileY)){
+                this.player.x = newx;
+            }
             this.saveGameState();
             this.gameTimeUpdate();
         });
@@ -372,6 +378,14 @@ export default class GameScene extends Phaser.Scene {
             console.log("Tutorial Complete!");
             this.tutorialComplete = true;
         }
+    }
+    wallCollision(tileX, tileY){
+        const tile = this.wallsLayer.getTileAt(tileX, tileY);
+        // If the tile exists and it has a 'collides' property, block the movement
+        if (!tile || !tile.properties.collides) {
+            return false;
+        }
+        return true;
     }
 
     //Save Game State

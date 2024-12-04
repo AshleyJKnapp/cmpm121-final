@@ -23,6 +23,7 @@ export default class Tilemap {
         // Create layers
         const groundLayer = map.createLayer('Ground', tileset, 0, 0);
         const wallsLayer = map.createLayer('Walls', tileset, 0, 0);
+        wallsLayer.setCollisionByProperty({ collides: true });//-----acknowledge the collides bool from tiled-----------
 
         groundLayer.setScale(1);
         wallsLayer.setScale(1);
