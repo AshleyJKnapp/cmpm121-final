@@ -62,6 +62,7 @@ export default class GameScene extends Phaser.Scene {
         this.input.keyboard.on('keydown-A', event =>
         {
             this.player.x -= this.tileSize * scale;
+            this.saveGameState();
             this.gameTimeUpdate();
         });
         
@@ -69,6 +70,7 @@ export default class GameScene extends Phaser.Scene {
         this.input.keyboard.on('keydown-D', event =>
         {
             this.player.x += this.tileSize * scale;
+            this.saveGameState();
             this.gameTimeUpdate();
         });
 
@@ -76,6 +78,7 @@ export default class GameScene extends Phaser.Scene {
         this.input.keyboard.on('keydown-W', event =>
         {
             this.player.y -= this.tileSize * scale;
+            this.saveGameState();
             this.gameTimeUpdate();
         });
 
@@ -83,10 +86,17 @@ export default class GameScene extends Phaser.Scene {
         this.input.keyboard.on('keydown-S', event =>
         {
             this.player.y += this.tileSize * scale;
+            this.saveGameState();
             this.gameTimeUpdate();
         });
+        //---debug--localstate------------------
+        /*
+        this.input.keyboard.on('keydown-Z', event =>
+            {
+                localStorage.clear();
+            });
 
-
+        */
         //  -- Player Select Item In Inventory --
         // TODO: somehow indicate to the player what they are holding
         // Chair
@@ -369,11 +379,12 @@ export default class GameScene extends Phaser.Scene {
         var gameState = {
             playerLocation: {x: this.player.x, y: this.player.y},
             plantsArr: this.plantsArr,
+            gameTime: this.gameTime,
         };
         localStorage.setItem(this.KEY, JSON.stringify(gameState));
     }
 
-    //TEMPORARY. HAVEN'T CONVERTED TO JAVASCRIPT YET
+    //Loads save state on reload
     loadGameState() {
         var gameState = localStorage.getItem(this.KEY);
         if (gameState) {
@@ -381,14 +392,18 @@ export default class GameScene extends Phaser.Scene {
           if (!state) {
             return;
           }
-          currentLocation = state.playerLocation;
+          let currentLocation = state.playerLocation;
+          this.player.x = currentLocation.x;
+          this.player.y = currentLocation.y;
+          this.gameTime = state.gameTime;
+          this.gameTimeUpdate();
       
           if (!currentLocation) {
             alert("Something went wrong with your location.");
             currentLocation = origin;
           }
         } else {
-          playerMovement(0, 0);
+          this.player.x = this.player.y = 0;
         }
       }
 
