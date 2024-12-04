@@ -1,5 +1,6 @@
 import Player from "../objects/Player.js";
 import ByteStructure, { Tilemap } from "../objects/ByteStructure.js";
+//import parsedData from '../scenarioData.json';
 
 export default class GameScene extends Phaser.Scene {
     constructor() {
@@ -46,6 +47,11 @@ export default class GameScene extends Phaser.Scene {
         this.nightOverlay = this.add.rectangle(0, 0, 1024, 576, 0x4c354b, 50).setOrigin(0,0);
         this.nightOverlay.setVisible(false);
 
+        // Scenario-based Variables
+        this.enabledPlants = [ "chair", "table", "wall" ]; // Array for currently available plants
+        this.winConditions = []
+        
+
         const scale = 1;
 
         this.player = new Player(this, 104, 104, 'player');
@@ -86,20 +92,29 @@ export default class GameScene extends Phaser.Scene {
         // Chair
         this.input.keyboard.on('keydown-ONE', event =>
         {
-            console.log("Holding chair");
-            this.currentItem = "chair";
+            if (this.enabledPlants[0])
+            {
+                console.log("Holding chair");
+                this.currentItem = this.enabledPlants[0];
+            }
         });
         // Table
         this.input.keyboard.on('keydown-TWO', event =>
         {
-            console.log("Holding table");
-            this.currentItem = "table";
+            if (this.enabledPlants[1])
+            {
+                console.log("Holding table");
+                this.currentItem = this.enabledPlants[1];
+            }
         });
         // Wall
         this.input.keyboard.on('keydown-THREE', event =>
         {
-            console.log("Holding wall");
-            this.currentItem = "wall";
+            if (this.enabledPlants[2])
+            {
+                console.log("Holding wall");
+                this.currentItem = this.enabledPlants[2];
+            }
         });
 
         // -- Player Actions --
@@ -393,4 +408,84 @@ export default class GameScene extends Phaser.Scene {
           CacheCells();
         }
       }
+
+    // Loads scenario mode based on .yml file
+    loadScenarioMode() {
+        switch (parsedData.chosen_scenario[0])
+        {
+            case "sandbox":
+                this.runScenarioMode(parsedData.sandbox);
+                break;
+            case "story":
+                this.runScenarioMode(parsedData.story);
+                break;
+        }
+    }
+
+    // Starts current scenario mode
+    runScenarioMode(scenario) {
+        if (scenario.tutorial)
+        {
+            this.enabledPlants = scenario.tutorial.available_plants;
+            this.winConditions = scenario.tutorial.win_conditions;
+        }
+    }
+
+    checkWin(winConditions) {
+        let winArray = [];
+
+        for (let w = 0; w < winConditions.length; w++)
+        {
+            winArray.push(false);
+        }
+
+        for (let i = 0; i < winConditions; i++)
+        {
+            if (winConditions[i][1] == "min")
+            {
+                let typeCheck = winConditions[i][0];
+                let typeCount = 0;
+
+                for (let m = 0; m < this.plantsArr; m++)
+                {
+                    if (this.plantsArr[m].type == typeCheck)
+                    {
+                        typeCount++;
+                    }
+                }
+
+                if (typeCheck >= winConditions[i][2])
+                {
+                    winArray[i] = true;
+                }
+            }
+            else if (winConditions[i][1] == "max")
+            {
+                let typeCheck = winConditions[i][0];
+                let typeCount = 0;
+
+                for (let m = 0; m < this.plantsArr; m++)
+                {
+                    if (this.plantsArr[m].type == typeCheck)
+                    {
+                        typeCount++;
+                    }
+                }
+
+                if (typeCheck <= winConditions[i][2])
+                {
+                    winArray[i] = true;
+                }
+            }
+        }
+
+        if (!winArray.some(f => f == false))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 }

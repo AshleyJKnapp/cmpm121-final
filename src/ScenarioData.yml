@@ -1,0 +1,51 @@
+# Choose scenario here (sandbox or story)
+chosen_scenario:
+    - sandbox
+
+# In sandbox mode, player is given all plants and there are no win conditions
+sandbox:
+    tutorial:
+        available_plants:
+            - chair
+            - table
+            - walls
+        win_conditions:
+            - null
+        human_instructions:
+            "you are free to explore and grow!"
+
+# In story mode, player will go through series of scenarios
+story:
+    tutorial:
+        available_plants:
+            - chair
+            - table
+        win_conditions:
+            - [chair,min,2]
+            - [table,min,1]
+        human_instructions:
+            "grow 2 chairs next to the same tile to allow for a table to finish growing!"
+    
+    foundation:
+        available_plants:
+            - wall
+        win_conditions:
+            - [wall,min,4]
+            - [room,min,1]
+        human_instructions:
+            "grow 4 walls to create a room!"
+    
+    house:
+        available_plants:
+            - chair
+            - table
+            - wall
+        win_conditions:
+            - [chair,min,2]
+            - [table,min,1]
+            - [wall,min,4]
+            - [room,min,1]
+            - [furnished,min,1]
+        human_instructions:
+            "grow yourself a furnished room with 2 chairs and a table"
+
