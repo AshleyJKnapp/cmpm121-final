@@ -75,7 +75,12 @@ export default class GameScene extends Phaser.Scene {
         // Right
         this.input.keyboard.on('keydown-D', event =>
         {
-            this.player.x += this.tileSize * scale;
+            const newx  = this.player.x + this.tileSize * scale;
+            const tileX = Math.floor(newx / this.tileSize);
+            const tileY = Math.floor(this.player.y / this.tileSize);
+            if(!this.wallCollision(tileX,tileY)){
+                this.player.x = newx;
+            }
             this.saveGameState();
             this.gameTimeUpdate();
         });
@@ -83,7 +88,12 @@ export default class GameScene extends Phaser.Scene {
         // Up
         this.input.keyboard.on('keydown-W', event =>
         {
-            this.player.y -= this.tileSize * scale;
+            const newy  = this.player.y - this.tileSize * scale;
+            const tileX = Math.floor(this.player.x / this.tileSize);
+            const tileY = Math.floor(newy / this.tileSize);
+            if(!this.wallCollision(tileX,tileY)){
+                this.player.y = newy;
+            }
             this.saveGameState();
             this.gameTimeUpdate();
         });
@@ -91,7 +101,12 @@ export default class GameScene extends Phaser.Scene {
         // Down
         this.input.keyboard.on('keydown-S', event =>
         {
-            this.player.y += this.tileSize * scale;
+            const newy  = this.player.y + this.tileSize * scale;
+            const tileX = Math.floor(this.player.x / this.tileSize);
+            const tileY = Math.floor(newy / this.tileSize);
+            if(!this.wallCollision(tileX,tileY)){
+                this.player.y = newy;
+            }
             this.saveGameState();
             this.gameTimeUpdate();
         });
