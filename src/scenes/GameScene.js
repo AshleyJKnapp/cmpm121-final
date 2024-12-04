@@ -157,6 +157,8 @@ export default class GameScene extends Phaser.Scene {
         this.cameras.main.setZoom(2)
         this.cameras.main.setBounds(0, 0, 1024, 576)
         this.cameras.main.setViewport(0, 0, 1024, 576)
+
+        this.loadGameState();
     }
 
     update(time, delta) {
@@ -364,48 +366,29 @@ export default class GameScene extends Phaser.Scene {
 
     //Save Game State
     saveGameState(){
-        const gameState = {
-            playerLocation,
-            plantsArr,
-            plantInv,
+        var gameState = {
+            playerLocation: {x: this.player.x, y: this.player.y},
+            plantsArr: this.plantsArr,
         };
         localStorage.setItem(this.KEY, JSON.stringify(gameState));
     }
 
     //TEMPORARY. HAVEN'T CONVERTED TO JAVASCRIPT YET
     loadGameState() {
-        const gameState = localStorage.getItem(this.KEY);
+        var gameState = localStorage.getItem(this.KEY);
         if (gameState) {
           const state = JSON.parse(gameState);
           if (!state) {
             return;
           }
-          currentLocation = state.currentLocation;
-          playerHistory = state.playerHistory;
-          mementos = state.mementos;
-          playerCoins = state.playerCoins;
+          currentLocation = state.playerLocation;
       
           if (!currentLocation) {
             alert("Something went wrong with your location.");
             currentLocation = origin;
           }
-          playerMarker.setLatLng(currentLocation);
-          CacheCells();
-          path.setLatLngs(playerHistory);
-          let walletText = "";
-          for (let i = 0; i < playerCoins.length; i++) {
-            walletText += `${playerCoins[i].cell.j}: ${playerCoins[i].cell.i}#${
-              playerCoins[i].serial
-            }`;
-            walletText += "| ";
-          }
-          statusPanel.innerHTML = `Coins in Wallet: ${walletText}`;
-          map.setView(currentLocation);
         } else {
           playerMovement(0, 0);
-          playerHistory.push(currentLocation);
-          removeCaches();
-          CacheCells();
         }
       }
 
