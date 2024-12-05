@@ -4,7 +4,7 @@ import { Plant } from "../objects/plants/Plant.js";
 import { Table } from "../objects/plants/Table.js";
 import { Wall } from "../objects/plants/Wall.js";
 
-export { Tilemap };
+export { Tilemap, Plant, Chair, Table, Wall };
 export default class ByteStructure {
     constructor(numTiles) {
         this.numTiles = numTiles;

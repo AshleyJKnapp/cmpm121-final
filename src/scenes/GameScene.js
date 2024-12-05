@@ -1,5 +1,5 @@
 import Player from "../objects/Player.js";
-import ByteStructure, { Tilemap } from "../objects/ByteStructure.js";
+import ByteStructure, { Tilemap, Chair, Wall, Table } from "../objects/ByteStructure.js";
 //import parsedData from '../scenarioData.json';
 
 export default class GameScene extends Phaser.Scene {
@@ -54,14 +54,15 @@ export default class GameScene extends Phaser.Scene {
 
         const scale = 1;
 
-        this.player = new Player(this, 104, 104, 'player');
+        let origin = 104;
+        this.player = new Player(this, origin, origin, 'player');
         this.player.setScale(scale);
 
         // -- Player Movement Controls (WASD) --
         // Left
         this.input.keyboard.on('keydown-A', event =>
         {   
-            const newx= this.player.x - this.tileSize * scale;
+            const newx= this.player.x - (this.tileSize * scale);
             // Tiled hates floats, use floor
             const tileX = Math.floor(newx / this.tileSize);
             const tileY = Math.floor(this.player.y / this.tileSize);
@@ -75,7 +76,7 @@ export default class GameScene extends Phaser.Scene {
         // Right
         this.input.keyboard.on('keydown-D', event =>
         {
-            const newx  = this.player.x + this.tileSize * scale;
+            const newx  = this.player.x + (this.tileSize * scale);
             const tileX = Math.floor(newx / this.tileSize);
             const tileY = Math.floor(this.player.y / this.tileSize);
             if(!this.wallCollision(tileX,tileY)){
@@ -88,7 +89,7 @@ export default class GameScene extends Phaser.Scene {
         // Up
         this.input.keyboard.on('keydown-W', event =>
         {
-            const newy  = this.player.y - this.tileSize * scale;
+            const newy  = this.player.y - (this.tileSize * scale);
             const tileX = Math.floor(this.player.x / this.tileSize);
             const tileY = Math.floor(newy / this.tileSize);
             if(!this.wallCollision(tileX,tileY)){
@@ -101,7 +102,7 @@ export default class GameScene extends Phaser.Scene {
         // Down
         this.input.keyboard.on('keydown-S', event =>
         {
-            const newy  = this.player.y + this.tileSize * scale;
+            const newy  = this.player.y + (this.tileSize * scale);
             const tileX = Math.floor(this.player.x / this.tileSize);
             const tileY = Math.floor(newy / this.tileSize);
             if(!this.wallCollision(tileX,tileY)){
@@ -111,13 +112,14 @@ export default class GameScene extends Phaser.Scene {
             }
         });
         //---debug--localstate------------------
-        /*
-        this.input.keyboard.on('keydown-Z', event =>
+        
+        this.input.keyboard.on('keydown-R', event =>
             {
+                this.resetMap(origin);
                 localStorage.clear();
             });
 
-        */
+        
         //  -- Player Select Item In Inventory --
         // TODO: somehow indicate to the player what they are holding
         // Chair
@@ -165,26 +167,26 @@ export default class GameScene extends Phaser.Scene {
             }
 
             // Get the tile that has the coords right in front of the player
-            let t;
+            let tile;
             for (let i = 0; i < this.tilesLayer.length; i++){
                 // -offset & +offset to fix offset from character placement
                 let offset = this.tileSize/2;
                 if (this.tilesLayer[i].x == this.player.x-offset && this.tilesLayer[i].y == this.player.y+offset){
-                    t = this.tilesLayer[i];
+                    tile = this.tilesLayer[i];
                 }
             }
 
             // If a tile was found, put the plant in it
-            if (t != null && plant != null){
+            if (tile != null && plant != null){
                 // Store the plant in the tile
-                t.addPlant(plant);
-                t.setTexture(plant.updateSprite());
+                tile.addPlant(plant);
+                tile.setTexture(plant.updateSprite());
                 // Store the tile in an array
-                this.plantsArr.push(t);
+                this.plantsArr.push(tile);
             }
         });
 
-
+        this.cameraCheck();
         this.cameras.main.setZoom(2)
         this.cameras.main.setBounds(0, 0, 1024, 576)
         this.cameras.main.setViewport(0, 0, 1024, 576)
@@ -223,6 +225,7 @@ export default class GameScene extends Phaser.Scene {
         if(this.gameTime / this.halfDay == 2){
             this.gameTime = 0;        
         }
+        console.log(this.gameTime);
     }
 
     clockUpdate(){
@@ -432,9 +435,26 @@ export default class GameScene extends Phaser.Scene {
             currentLocation = origin;
           }
         } else {
-          this.player.x = this.player.y = 0;
+          this.player.x = this.player.y = origin;
         }
+        this.cameraCheck();
       }
+
+    resetMap(origin) {
+        this.player.x = origin;
+        this.player.y = origin;
+
+        this.gameTime = 0;
+        let tile;
+        for(let i = 0; i < this.plantsArr.length; i++){
+            tile = this.plantsArr[i];
+            if (tile != null){
+                // Remove the plant in the tile
+                tile.removePlant();
+            }
+        }
+        this.plantsArr = [];
+    }
 
     // Loads scenario mode based on .yml file
     loadScenarioMode() {

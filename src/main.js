@@ -39,4 +39,20 @@ const config = {
     },
     fixedWidth: 0
   }
+
+//let gameplayScene = this.scene.get('GameScene');t
+
+document.getElementById("reset")?.addEventListener("click", () => {
+  const promptConfirmation = prompt("Are you sure you want to delete your saves? Yes | No");
+  if (promptConfirmation?.toLocaleLowerCase() === "yes") {
+    alert("Deleted Save Data");
+    localStorage.clear();
+    //resetMap(104);
+  }
+});
+
+document.getElementById("save")?.addEventListener("click", () => {
+  //gameplayScene.saveGameState();
+  alert("Saved Game");
+});
   
