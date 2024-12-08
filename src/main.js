@@ -16,14 +16,8 @@ const config = {
         debug: false
       }
     },
-    scene: [GameScene]
+    scene: [Menu, GameScene]
   };
-  
-  function preload() {
-}
-  
-  function create() {
-  }
   
   const game = new Phaser.Game(config);
 
@@ -40,7 +34,8 @@ const config = {
     fixedWidth: 0
   }
 
-//let gameplayScene = this.scene.get('GameScene');t
+//let gameplayScene = this.scene.get('GameScene');
+let keyLEFT, keyRIGHT;
 
 document.getElementById("reset")?.addEventListener("click", () => {
   const promptConfirmation = prompt("Are you sure you want to delete your saves? Yes | No");
