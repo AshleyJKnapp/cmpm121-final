@@ -57,3 +57,14 @@ Our group had considered using Godot GDScript while switching to C# later, but a
 
 ## Reflection
 Although difficult and a noticably in need of same changes and fixes, we were able to implement the the games grid as a Contiguous Byte array and implement a save system similar to one done in an earlier project this quarter. With this knowledge, creating a save file system wasn't as challenging as it would be without previous work on javascript and its localstorage. Although Intuitive, there is room for improvement especially to make sure everything works fully as intended when it comes to the sav file system implemented, regardless functionality is present and adding on top of it such as saving more data to a specific item in local storage shouldn't pose much as challenge compared to getting the base functionality off the ground.
+
+---
+
+# Devlog Entry - F3
+## How we satisfied the software requirements
+- F3.a Although we didn't reach these implementations we planned to implement text regarding which furniture you were holding and adding variables that could be passed into text for internalization.
+- F3.b The game was planned to be accessible with languages such as Chinese,Tagalog, and Spanish as these are languages our group members are familiar with and could create translations for, albeit simple.
+- F3.c We also planned to have our game become installable as an APK for use on android since APKs make it easy to install devices not on app stores. This did threaten quite a challenge if approached as this is unfamiliar territory for our teammates.
+- F3.d Our application would be able to be played offline using our local storage logic within the code that Javascript makes intuitive to use thus making any sort of internet connection not necessary.
+## Reflection
+The challenge that poses these requirement allows us to reflect on our skills we have gained so far and what we could have learned if we managed to accomplish requirements. Learning to process text for translation and creating apps is a importnat skill in order for the reach of projects in general to reach people who uses other devices or that speak other languages.
