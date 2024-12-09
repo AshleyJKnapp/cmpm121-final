@@ -96,13 +96,16 @@ class SaveSelect extends Phaser.Scene {
     confirmSelection(){
         //for each one select a differnet local key
         if(this.selectedButtonIndex == 0){
-            this.scene.start("GameScene");
+            let key = "LOCAL";
+            this.scene.start("GameScene", key);
         }
         if(this.selectedButtonIndex == 1){
-            this.scene.start("GameScene");
+            let key = "SAVE1";
+            this.scene.start("GameScene", key);
         }
         if(this.selectedButtonIndex == 2){
-            this.scene.start("GameScene");
+            let key = "SAVE2";
+            this.scene.start("GameScene", key);
         }
     }
   

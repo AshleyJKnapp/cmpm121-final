@@ -95,7 +95,8 @@ class Menu extends Phaser.Scene {
     confirmSelection(){
         if(this.selectedButtonIndex == 0){
             //probably clear local storage to start a new save
-            this.scene.start("GameScene");
+            let key = "CLEAN";
+            this.scene.start("GameScene", key);
         }
         if(this.selectedButtonIndex == 1){
             this.scene.start("saveSelectScene");

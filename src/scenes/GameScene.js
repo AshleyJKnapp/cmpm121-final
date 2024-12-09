@@ -12,6 +12,9 @@ export default class GameScene extends Phaser.Scene {
         //One for AutoSaves
         //And two that gets saved to a save slot
         this.KEY = "LOCAL";
+        this.KEY1="SAVE1";
+        this.KEY2="SAVE2";
+        this.KEYSAFE="CLEAN";
     }
 
     preload() {
@@ -31,7 +34,7 @@ export default class GameScene extends Phaser.Scene {
         this.plantsArr = [];
     }
 
-    create() {
+    create(key) {
         // Use Tilemap class to create map
         const { _map, groundLayer, wallsLayer, tiles } = this.tilemap.create();
         // console.log(this.tilemap.getTiles());
@@ -74,7 +77,7 @@ export default class GameScene extends Phaser.Scene {
             const tileY = Math.floor(this.player.y / this.tileSize);
             if(!this.wallCollision(tileX,tileY)){
                 this.player.x = newx;
-                this.saveGameState();
+                this.saveGameState(this.KEY)
                 this.gameTimeUpdate();
             }
         });
@@ -87,7 +90,7 @@ export default class GameScene extends Phaser.Scene {
             const tileY = Math.floor(this.player.y / this.tileSize);
             if(!this.wallCollision(tileX,tileY)){
                 this.player.x = newx;
-                this.saveGameState();
+                this.saveGameState(this.KEY)
                 this.gameTimeUpdate();
             }
         });
@@ -100,7 +103,7 @@ export default class GameScene extends Phaser.Scene {
             const tileY = Math.floor(newy / this.tileSize);
             if(!this.wallCollision(tileX,tileY)){
                 this.player.y = newy;
-                this.saveGameState();
+                this.saveGameState(this.KEY)
                 this.gameTimeUpdate();
             }
         });
@@ -113,7 +116,7 @@ export default class GameScene extends Phaser.Scene {
             const tileY = Math.floor(newy / this.tileSize);
             if(!this.wallCollision(tileX,tileY)){
                 this.player.y = newy;
-                this.saveGameState();
+                this.saveGameState(this.KEY)
                 this.gameTimeUpdate();
             }
         });
@@ -196,8 +199,19 @@ export default class GameScene extends Phaser.Scene {
         this.cameras.main.setZoom(2)
         this.cameras.main.setBounds(0, 0, 1024, 576)
         this.cameras.main.setViewport(0, 0, 1024, 576)
-
-        this.loadGameState();
+        this.createNewGameStorage();
+        console.log("Key passed from save: ", key);
+        this.currentKEY = key;
+        this.loadGameState(this.currentKEY);
+        document.getElementById("save1")?.addEventListener("click", () => {
+            //console.log("current key: ", this.currentKEY);
+            this.saveGameState(this.KEY1);
+            console.log("saved to: ", this.KEY1);
+          });
+        document.getElementById("save2")?.addEventListener("click", () => {
+            this.saveGameState(this.KEY2);
+            console.log("saved to: ", this.KEY2);
+        });
     }
 
     update(time, delta) {
@@ -231,7 +245,7 @@ export default class GameScene extends Phaser.Scene {
         if(this.gameTime / this.halfDay == 2){
             this.gameTime = 0;        
         }
-        console.log(this.gameTime);
+        //console.log(this.gameTime);
     }
 
     clockUpdate(){
@@ -395,7 +409,7 @@ export default class GameScene extends Phaser.Scene {
     //Checks if Player has harvested 1 of each plant
     plantInvCheck(){
         // if(this.chairsHarvested >= 1 && this.tablesHarvested >= 1 && this.wallHarvested >= 1 && this.tutorialComplete == false){
-        if(this.roomsComplete >= 1) {
+        if(this.roomsComplete >= 1 && this.tutorialComplete != true) {
             //This code doesn't work because var game is unable to be read
             //this.add.text(game.config.width/2, game.config.height/3 - borderUISize - 
               //  borderPadding, 'Tutorial Complete!', tutorialConfig).setOrigin(0.5);
@@ -411,23 +425,32 @@ export default class GameScene extends Phaser.Scene {
         }
         return true;
     }
-
+    createNewGameStorage(){
+        var gameState = {
+            playerLocation: {x: 104, y: 104},
+            plantsArr: [],
+            gameTime: 0,
+        };
+        localStorage.setItem(this.KEYSAFE, JSON.stringify(gameState));
+    }
     //Save Game State
-    saveGameState(){
+    saveGameState(k){//This function is used by the player to save to file and for auto save to save to LOCAL key
         var gameState = {
             playerLocation: {x: this.player.x, y: this.player.y},
             plantsArr: this.plantsArr,
             gameTime: this.gameTime,
         };
-        localStorage.setItem(this.KEY, JSON.stringify(gameState));
+        localStorage.setItem(k, JSON.stringify(gameState));
     }
 
     //Loads save state on reload
-    loadGameState() {
-        var gameState = localStorage.getItem(this.KEY);
+    loadGameState(key) {
+        console.log("loadgamestate key is ", key);
+        var gameState = localStorage.getItem(key);
         if (gameState) {
           const state = JSON.parse(gameState);
           if (!state) {
+            console.log("no key found");
             return;
           }
           let currentLocation = state.playerLocation;
