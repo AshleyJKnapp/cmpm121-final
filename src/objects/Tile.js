@@ -23,7 +23,7 @@ export default class Tile extends Phaser.GameObjects.Image {
         this.plant = plant;
         // plant.setPosition(this.x, this.y);
     }
-
+    
     removePlant() {
         if (this.plant) {
             //if(this.plant.type == "chair"){

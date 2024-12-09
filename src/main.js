@@ -15,7 +15,7 @@ const config = {
         debug: false
       }
     },
-    scene: [Menu, Credits, GameScene, SaveSelect]
+    scene: [ Menu, GameScene, Credits, SaveSelect]
   };
   
   const game = new Phaser.Game(config);

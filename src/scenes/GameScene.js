@@ -38,7 +38,6 @@ export default class GameScene extends Phaser.Scene {
         // Use Tilemap class to create map
         const { _map, groundLayer, wallsLayer, tiles } = this.tilemap.create();
         // console.log(this.tilemap.getTiles());
-        
         this.groundLayer = groundLayer;
         this.wallsLayer = wallsLayer;
         this.tilesLayer = tiles;
@@ -122,7 +121,7 @@ export default class GameScene extends Phaser.Scene {
         });
         //---debug--localstate------------------
         
-        this.input.keyboard.on('keydown-R', event =>
+        this.input.keyboard.on('keydown-E', event =>
             {
                 this.resetMap(origin);
                 localStorage.clear();
@@ -189,6 +188,7 @@ export default class GameScene extends Phaser.Scene {
             if (tile != null && plant != null){
                 // Store the plant in the tile
                 tile.addPlant(plant);
+                this.plantz.push(plant);
                 tile.setTexture(plant.updateSprite());
                 // Store the tile in an array
                 this.plantsArr.push(tile);
@@ -199,7 +199,10 @@ export default class GameScene extends Phaser.Scene {
         this.cameras.main.setZoom(2)
         this.cameras.main.setBounds(0, 0, 1024, 576)
         this.cameras.main.setViewport(0, 0, 1024, 576)
-        this.createNewGameStorage();
+        this.createNewGameStorage(this.KEYSAFE);
+        this.createNewGameStorage(this.KEY);
+        this.createNewGameStorage(this.KEY1);
+        this.createNewGameStorage(this.KEY2);
         console.log("Key passed from save: ", key);
         this.currentKEY = key;
         this.loadGameState(this.currentKEY);
@@ -425,13 +428,14 @@ export default class GameScene extends Phaser.Scene {
         }
         return true;
     }
-    createNewGameStorage(){
+    createNewGameStorage(k){
         var gameState = {
             playerLocation: {x: 104, y: 104},
             plantsArr: [],
+            plantz: [],
             gameTime: 0,
         };
-        localStorage.setItem(this.KEYSAFE, JSON.stringify(gameState));
+        localStorage.setItem(k, JSON.stringify(gameState));
     }
     //Save Game State
     saveGameState(k){//This function is used by the player to save to file and for auto save to save to LOCAL key
@@ -439,6 +443,7 @@ export default class GameScene extends Phaser.Scene {
             playerLocation: {x: this.player.x, y: this.player.y},
             plantsArr: this.plantsArr,
             gameTime: this.gameTime,
+            plantz: this.plantz,
         };
         localStorage.setItem(k, JSON.stringify(gameState));
     }
@@ -457,6 +462,8 @@ export default class GameScene extends Phaser.Scene {
           this.player.x = currentLocation.x;
           this.player.y = currentLocation.y;
           this.gameTime = state.gameTime;
+          this.plantsArr = state.plantsArr;
+          this.plantz = state.plantz;
           this.gameTimeUpdate();
       
           if (!currentLocation) {
