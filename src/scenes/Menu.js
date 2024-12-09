@@ -32,17 +32,17 @@ class Menu extends Phaser.Scene {
         //menuConfig.backgroundColor = '#00FF00';
         //menuConfig.color = "#000";
         // define keys
-        this.keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
-        this.keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+        this.keyUP = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
+        this.keyDOWN = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
-        const playButton = this.add.image(gameWidth/2, gameHeight/3 + 100, 'glass-panel').setDisplaySize(300, 100).setInteractive()
-        this.add.text(playButton.x, playButton.y, 'Press SPACE to start').setOrigin(0.5)
-        const settingsButton = this.add.image(playButton.x, playButton.y + 100, 'glass-panel').setDisplaySize(300, 100).setInteractive()
-        this.add.text(settingsButton.x, settingsButton.y, 'Settings').setOrigin(0.5)
+        const playButton = this.add.image(gameWidth/2, gameHeight/3 + 50, 'glass-panel').setDisplaySize(300, 100).setInteractive()
+        this.add.text(playButton.x, playButton.y, 'NEW GAME').setOrigin(0.5)
+        const saveSelectButton = this.add.image(playButton.x, playButton.y + 110, 'glass-panel').setDisplaySize(300, 100).setInteractive()
+        this.add.text(saveSelectButton.x, saveSelectButton.y, 'CONTINUE').setOrigin(0.5)
 
-        const creditsButton = this.add.image(settingsButton.x, settingsButton.y + 100, 'glass-panel').setDisplaySize(300, 100).setInteractive()
-        this.add.text(creditsButton.x, creditsButton.y, 'Credits').setOrigin(0.5)
+        const creditsButton = this.add.image(saveSelectButton.x, saveSelectButton.y + 110, 'glass-panel').setDisplaySize(300, 100).setInteractive()
+        this.add.text(creditsButton.x, creditsButton.y, 'CREDITS').setOrigin(0.5)
 
 
         // create input
@@ -50,8 +50,8 @@ class Menu extends Phaser.Scene {
         //this.buttons = Phaser.GameObjects.Image
 	    this.selectedButtonIndex = 0
 
-        //this.buttons = this.add.group([playButton, settingsButton, creditsButton])
-        this.buttons = [playButton, settingsButton, creditsButton]
+        //this.buttons = this.add.group([playButton, saveSelectButton, creditsButton])
+        this.buttons = [playButton, saveSelectButton, creditsButton]
 
         this.buttonSelector = this.add.image(0, 0, 'cursor-hand')
 
@@ -94,6 +94,7 @@ class Menu extends Phaser.Scene {
 
     confirmSelection(){
         if(this.selectedButtonIndex == 0){
+            //probably clear local storage to start a new save
             this.scene.start("GameScene");
         }
         if(this.selectedButtonIndex == 1){

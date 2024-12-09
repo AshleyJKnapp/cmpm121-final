@@ -5,7 +5,6 @@ const config = {
     width: 1024,
     height: 576,
     scale: {
-      mode: Phaser.Scale.FIT,
       autoCenter: Phaser.Scale.CENTER_BOTH
     },
     pixelArt: true,
@@ -16,7 +15,7 @@ const config = {
         debug: false
       }
     },
-    scene: [Menu, GameScene]
+    scene: [Menu, Credits, GameScene, SaveSelect]
   };
   
   const game = new Phaser.Game(config);
@@ -50,4 +49,8 @@ document.getElementById("save")?.addEventListener("click", () => {
   //gameplayScene.saveGameState();
   alert("Saved Game");
 });
+
+document.getElementById('info').innerHTML = '<strong>Controls:</strong> WASD: move | ESC: Pause Game | SPACE: Action Key'
+document.getElementById('info').style.color = "#000000"
+document.getElementById('info').style.textAlign = 'center'
   

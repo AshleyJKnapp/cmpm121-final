@@ -5,6 +5,12 @@ import ByteStructure, { Tilemap, Chair, Wall, Table } from "../objects/ByteStruc
 export default class GameScene extends Phaser.Scene {
     constructor() {
         super('GameScene');
+
+        //TO DO
+        //We need 4 keys I think
+        //One that is locked to the beginning of the game
+        //One for AutoSaves
+        //And two that gets saved to a save slot
         this.KEY = "LOCAL";
     }
 
@@ -151,7 +157,7 @@ export default class GameScene extends Phaser.Scene {
         });
 
         // -- Player Actions --
-        this.input.keyboard.on('keydown-ENTER', event =>
+        this.input.keyboard.on('keydown-SPACE', event =>
         {
             
             // Create a plant to put in Tile
