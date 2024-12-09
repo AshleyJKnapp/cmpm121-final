@@ -48,7 +48,7 @@ Our group had considered using Godot GDScript while switching to C# later, but a
 
 # Devlog Entry - F1
 ## How we satisfied the software requirements
-- F1.a: Our team was able to back our game’s grid using a Contiguous byte array(AoS) referenced in our code as the ByteStructure  class saved in its own file, ByteStructure.js.  Using the Uint8Array we allow 11 bytes per tile which  all have roles such as Tile attributes, tile positions and some bytes for the plant system. For this system we also made sure we had a method to retrieve a tile’s attributes by Index called getTiledAttributes.
+- F1.a: Our team was able to create the framework to back our game’s grid using a Contiguous byte array(AoS) referenced in our code as the ByteStructure class saved in its own file, ByteStructure.js.  Using the Uint8Array we allow 11 bytes per tile which  all have roles such as Tile attributes, tile positions and some bytes for the plant system. For this system we also made sure we had a method to retrieve a tile’s attributes by Index called getTiledAttributes.
 - F1.b:  We created two buttons at the top of the game outside the canvas that allow for multiple save states. These buttons save each to a different local storage item as respectively, “KEY1” or “KEY2”. Then from here if the player reloads they can go to the main menu and look for their save, upon pressing the key is passed to the next scene and local storage would be able to recognize it and load the save file.
 - F1.c: The game automatically saves when moving around to the local storage item “LOCAL” and loads this in the main menu by pressing the autosave file button to load the save file containing the previously saved items
 - F1.d: The player as of now can press new game to start a fresh save that undos all previous work
@@ -56,13 +56,13 @@ Our group had considered using Godot GDScript while switching to C# later, but a
 ![F1_diagram](https://github.com/AshleyJKnapp/cmpm121-final/blob/main/ArrayOfStructs%20Diagram.png)
 
 ## Reflection
-Although difficult and a noticably in need of same changes and fixes, we were able to implement the the games grid as a Contiguous Byte array and implement a save system similar to one done in an earlier project this quarter. With this knowledge, creating a save file system wasn't as challenging as it would be without previous work on javascript and its localstorage. Although Intuitive, there is room for improvement especially to make sure everything works fully as intended when it comes to the sav file system implemented, regardless functionality is present and adding on top of it such as saving more data to a specific item in local storage shouldn't pose much as challenge compared to getting the base functionality off the ground.
+Although difficult and a noticably in need of same changes and fixes, we were able to create the framework for a Contiguous Byte array and implement a save system similar to one done in an earlier project this quarter. With this knowledge, creating a save file system wasn't as challenging as it would be without previous work on javascript and its localstorage. Although intuitive, there is room for improvement especially to make sure everything works fully as intended when it comes to the sav file system implemented, regardless functionality is present and adding on top of it such as saving more data to a specific item in local storage shouldn't pose much as challenge compared to getting the base functionality off the ground.
 
 ---
 
 # Devlog Entry - F2
 ## How we satisfied the software requirements
-- F3.a
+- F3.a Our External DSL for scenario design uses YAML. It allows for the choice between sandbox mode and story mode, each with a tutorial, win conditions, and optional steps in between.
 - F3.b The game was planning to have plants have growing condition based on the daylight and would be implemented using Internal DSL. These plants could potentially have different ways they grow based on the day and night time cycle having some grow in the night rather than in the day for example.
 - F3.c We planned to port our game into typescript as it used Phaser a javascript game engine. The programming language would similar enough to javascript that porting it would be a little bit easier but rather challenging and time consuming for our project.
 ## Reflection
@@ -74,7 +74,7 @@ These would have posed a significant time dedication from our team members getti
 ## How we satisfied the software requirements
 - F3.a Although we didn't reach these implementations we planned to implement text regarding which furniture you were holding and adding variables that could be passed into text for internalization.
 - F3.b The game was planned to be accessible with languages such as Chinese,Tagalog, and Spanish as these are languages our group members are familiar with and could create translations for, albeit simple.
-- F3.c We also planned to have our game become installable as an APK for use on android since APKs make it easy to install devices not on app stores. This did threaten quite a challenge if approached as this is unfamiliar territory for our teammates.
-- F3.d Our application would be able to be played offline using our local storage logic within the code that Javascript makes intuitive to use thus making any sort of internet connection not necessary.
+- F3.c We also planned to have our game become installable as a PWA, following [this tutorial](https://gamedevacademy.org/phaser-progressive-web-apps-tutorial/) fine tuned for phaser. Although we do not have working controls or UI designed for mobile, a service worker is successfully registered and an iPhone is able to save the game to the home screen.
+- F3.d Our game partially loads when offline. As of right now, the Phaser game window does not load when offline, however, two HTML buttons we have outside of the game window do successfully load. We found that we had to save all of the source files (textures, code, and even the Phaser library) to the user's cache. Since we had to load pretty much all of the files into a javascript file, we used a bash script to collect all of the file names. In hindsight, putting all of those names into a JSON and reading from that in the Service Worker script may have been more organized than pasting all the names into the script.
 ## Reflection
 The challenge that poses these requirement allows us to reflect on our skills we have gained so far and what we could have learned if we managed to accomplish requirements. Learning to process text for translation and creating apps is a importnat skill in order for the reach of projects in general to reach people who uses other devices or that speak other languages.
