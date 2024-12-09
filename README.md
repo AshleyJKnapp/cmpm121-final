@@ -43,3 +43,15 @@ We anticipate the transition between Javascript to Typescript being the hardest 
 
 ## Reflection
 Our group had considered using Godot GDScript while switching to C# later, but after some discussion we decided to go with our original choice of Phaser. Our whole group was already experienced with phaser so our Engine lead did not have to teach us how to use it. As for team role adjustments, while discussing the project as a team, we came to realize that Nathaniel seems to fit the role of designer better, as he proposed the creative direction we eventually went with. Ashley seemed to better fit the role of Engine lead as she would figure out how to connect our different class files together. She would also explain how the different parts of the code are supposed to work together.
+
+---
+
+# Devlog Entry - F1
+## How we satisfied the software requirements
+-F1.a: Our team was able to back our game’s grid using a Contiguous byte array(AoS) referenced in our code as the ByteStructure  class saved in its own file, ByteStructure.js.  Using the Uint8Array we allow 11 bytes per tile which  all have roles such as Tile attributes, tile positions and some bytes for the plant system. For this system we also made sure we had a method to retrieve a tile’s attributes by Index called getTiledAttributes.
+-F1.b:  We created two buttons at the top of the game outside the canvas that allow for multiple save states. These buttons save each to a different local storage item as respectively, “KEY1” or “KEY2”. Then from here if the player reloads they can go to the main menu and look for their save, upon pressing the key is passed to the next scene and local storage would be able to recognize it and load the save file.
+-F1.c: The game automatically saves when moving around to the local storage item “LOCAL” and loads this in the main menu by pressing the autosave file button to load the save file containing the previously saved items
+-F1.d: The player as of now can press new game to start a fresh save that undos all previous work 
+
+## Reflection
+Although difficult and a noticably in need of same changes and fixes, we were able to implement the the games grid as a Contiguous Byte array and implement a save system similar to one done in an earlier project this quarter. With this knowledge, creating a save file system wasn't as challenging as it would be without previous work on javascript and its localstorage. Although Intuitive, there is room for improvement especially to make sure everything works fully as intended when it comes to the sav file system implemented, regardless functionality is present and adding on top of it such as saving more data to a specific item in local storage shouldn't pose much as challenge compared to getting the base functionality off the ground.
