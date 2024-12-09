@@ -37,17 +37,12 @@ export default class GameScene extends Phaser.Scene {
     create(key) {
         // Use Tilemap class to create map
         const { _map, groundLayer, wallsLayer, tiles } = this.tilemap.create();
-        // console.log(this.tilemap.getTiles());
         this.groundLayer = groundLayer;
         this.wallsLayer = wallsLayer;
         this.tilesLayer = tiles;
         this.tileSize = 16;
         this.currentItem = "";
         this.roomsComplete = 0;
-        // remove these harvested and related logic later, as we are not harvesting these
-        this.chairsHarvested = 0;
-        this.tablesHarvested = 0;
-        this.wallHarvested = 0;
         this.tutorialComplete = false;
         this.gameTime = 0;
         this.halfDay = 12;
@@ -188,7 +183,6 @@ export default class GameScene extends Phaser.Scene {
             if (tile != null && plant != null){
                 // Store the plant in the tile
                 tile.addPlant(plant);
-                this.plantz.push(plant);
                 tile.setTexture(plant.updateSprite());
                 // Store the tile in an array
                 this.plantsArr.push(tile);
@@ -408,7 +402,6 @@ export default class GameScene extends Phaser.Scene {
 
     //Checks if Player has harvested 1 of each plant
     plantInvCheck(){
-        // if(this.chairsHarvested >= 1 && this.tablesHarvested >= 1 && this.wallHarvested >= 1 && this.tutorialComplete == false){
         if(this.roomsComplete >= 1 && this.tutorialComplete != true) {
             //This code doesn't work because var game is unable to be read
             //this.add.text(game.config.width/2, game.config.height/3 - borderUISize - 
@@ -429,19 +422,58 @@ export default class GameScene extends Phaser.Scene {
         var gameState = {
             playerLocation: {x: 104, y: 104},
             plantsArr: [],
-            plantz: [],
+            plantTilesArr: [],
             gameTime: 0,
         };
         localStorage.setItem(k, JSON.stringify(gameState));
     }
     //Save Game State
     saveGameState(k){//This function is used by the player to save to file and for auto save to save to LOCAL key
+        // let byteStructArr = []
+        // for (let i = 0; i < this.plantsArr.length; i++){
+        //     let currTile = this.plantsArr[i];
+        //     let currPlant = currTile.plant;
+        //     let byteStruct = new ByteStructure();
+        //     // byteStruct.setTileAttributes(
+        //     //     currTile.water, currTile.sun, currTile.collides,
+        //     //     currTile.x, currTile.y,
+        //     //     currPlant.type, currPlant.growthStage,
+        //     //     currPlant.growth, currPlant.fullyGrown
+        //     // );
+        //     let water = currTile.water; let sun = currTile.sun;
+        //     let collides = currTile.collides;
+        //     let x = currTile.x; let y = currTile.y;
+        //     let type = currPlant.type;
+        //     let growthStage = currPlant.growthStage;
+        //     let growth = currPlant.growth;
+        //     let fullyGrown = currPlant.fullyGrown;
+        //     byteStruct.setTileAttributes(i, {
+        //         water, sun, collides,
+        //         x, y,
+        //         type, growthStage,
+        //         growth, fullyGrown
+        //     });
+
+        //     console.log("struct array is "+byteStruct.byteArray.toString);
+
+        //     byteStructArr.push(byteStruct);
+        // }
+        // Handle objects nested in objects for stringify
+        let tileR = []
+        let plantR = [];
+        for (let i = 0; i < this.plantsArr.length; i++){
+            let currTile = this.plantsArr[i];
+            let currPlant = currTile.plant;
+            tileR.push(JSON.stringify(currTile));
+            plantR.push(JSON.stringify(currPlant));
+        }
         var gameState = {
             playerLocation: {x: this.player.x, y: this.player.y},
-            plantsArr: this.plantsArr,
+            plantsArr: plantR,
+            plantTilesArr: tileR,
             gameTime: this.gameTime,
-            plantz: this.plantz,
         };
+        // console.log("gamestate: " + JSON.stringify(gameState));
         localStorage.setItem(k, JSON.stringify(gameState));
     }
 
@@ -450,25 +482,71 @@ export default class GameScene extends Phaser.Scene {
         console.log("loadgamestate key is ", key);
         var gameState = localStorage.getItem(key);
         if (gameState) {
-          const state = JSON.parse(gameState);
-          if (!state) {
+        const state = JSON.parse(gameState);
+        if (!state) {
             console.log("no key found");
             return;
-          }
-          let currentLocation = state.playerLocation;
-          this.player.x = currentLocation.x;
-          this.player.y = currentLocation.y;
-          this.gameTime = state.gameTime;
-          this.plantsArr = state.plantsArr;
-          this.plantz = state.plantz;
-          this.gameTimeUpdate();
-      
-          if (!currentLocation) {
-            alert("Something went wrong with your location.");
-            currentLocation = origin;
-          }
+        }
+        let currentLocation = state.playerLocation;
+        this.player.x = currentLocation.x;
+        this.player.y = currentLocation.y;
+        this.gameTime = state.gameTime;
+        this.gameTimeUpdate();
+
+        // Load Plant + Tile data and re-create the plants
+        const tileRjson = (state.plantTilesArr);
+        const plantRjson = (state.plantsArr);
+        for (let i = 0; i < tileRjson.length; i++){
+            let tileR = JSON.parse(tileRjson[i]);
+            let plantR = JSON.parse(plantRjson[i]);
+
+            // Create a plant to put in Tile
+            let plant = null;
+            if(plantR.type == "chair"){
+                plant = new Chair();
+            }
+            else if(plantR.type == "table"){
+                plant = new Table();
+            }
+            else if(plantR.type == "wall"){
+                plant = new Wall();
+            }
+
+            // Give the new plant the loaded plant stats
+            if (plant){
+                plant.growthStage = plantR.growthStage;
+                plant.growth = plantR.growth;
+                plant.growthThreshold = plantR.growthThreshold;
+                plant.growthScaleBy = plantR.growthScaleBy;
+                plant.fullyGrown = plantR.fullyGrown;
+            }
+            
+            // Get the tile that matches the current tile's x,y
+            let tile;
+            for (let i = 0; i < this.tilesLayer.length; i++){
+                let offset = this.tileSize/2;
+                if (this.tilesLayer[i].x == tileR.x && this.tilesLayer[i].y == tileR.y){
+                    tile = this.tilesLayer[i];
+                }
+            }
+            
+            // If a tile was found, put the plant in it
+            if (tile != null && plant != null){
+                // Store the plant in the tile
+                tile.addPlant(plant);
+                tile.setTexture(plant.updateSprite());
+                // Store the tile in an array
+                this.plantsArr.push(tile);
+            }
+        }
+            
+
+        if (!currentLocation) {
+        alert("Something went wrong with your location.");
+        currentLocation = origin;
+        }
         } else {
-          this.player.x = this.player.y = origin;
+        this.player.x = this.player.y = origin;
         }
         this.cameraCheck();
       }
