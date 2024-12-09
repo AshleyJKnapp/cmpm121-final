@@ -200,9 +200,6 @@ export default class GameScene extends Phaser.Scene {
         this.cameras.main.setBounds(0, 0, 1024, 576)
         this.cameras.main.setViewport(0, 0, 1024, 576)
         this.createNewGameStorage(this.KEYSAFE);
-        this.createNewGameStorage(this.KEY);
-        this.createNewGameStorage(this.KEY1);
-        this.createNewGameStorage(this.KEY2);
         console.log("Key passed from save: ", key);
         this.currentKEY = key;
         this.loadGameState(this.currentKEY);
