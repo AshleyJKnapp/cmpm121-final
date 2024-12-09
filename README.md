@@ -60,6 +60,16 @@ Although difficult and a noticably in need of same changes and fixes, we were ab
 
 ---
 
+# Devlog Entry - F2
+## How we satisfied the software requirements
+- F3.a
+- F3.b The game was planning to have plants have growing condition based on the daylight and would be implemented using Internal DSL. These plants could potentially have different ways they grow based on the day and night time cycle having some grow in the night rather than in the day for example.
+- F3.c We planned to port our game into typescript as it used Phaser a javascript game engine. The programming language would similar enough to javascript that porting it would be a little bit easier but rather challenging and time consuming for our project.
+## Reflection
+These would have posed a significant time dedication from our team members getting these software requirements to come to fruition. The scope of the game would also have possed difficulty for making a port anything but challenging especially since the Phaser engine is based on Javascript
+
+---
+
 # Devlog Entry - F3
 ## How we satisfied the software requirements
 - F3.a Although we didn't reach these implementations we planned to implement text regarding which furniture you were holding and adding variables that could be passed into text for internalization.
