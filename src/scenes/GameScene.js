@@ -114,6 +114,11 @@ export default class GameScene extends Phaser.Scene {
                 this.gameTimeUpdate();
             }
         });
+
+        this.input.keyboard.on('keydown-ESC', event =>
+            {
+                this.scene.start("menuScene");
+            });
         //---debug--localstate------------------
         
         this.input.keyboard.on('keydown-E', event =>

@@ -50,7 +50,7 @@ document.getElementById("save")?.addEventListener("click", () => {
   alert("Saved Game");
 });
 
-document.getElementById('info').innerHTML = '<strong>Controls:</strong> WASD: move | ESC: Pause Game | SPACE: Action Key'
+document.getElementById('info').innerHTML = '<strong>Controls:</strong> WASD: move | ESC: Return to Main Menu | SPACE: Action Key | Num 1, 2, 3 for Furniture'
 document.getElementById('info').style.color = "#000000"
 document.getElementById('info').style.textAlign = 'center'
   
